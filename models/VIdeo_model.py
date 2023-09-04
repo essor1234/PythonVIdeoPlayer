@@ -1,3 +1,4 @@
+import cv2
 import pandas as pd
 from tkinter import filedialog as fd
 from pytube import YouTube
@@ -103,7 +104,45 @@ class Video:
         return path
 
     def play_video(self, video_id):
-        pass
+        video_list = self.get_video_data()
+        video_path = None
+        for video in video_list:
+            if video.id == video_id:
+                video_path = video.path
+        # check if there is any video path
+        if video_path is None:
+            return False
+        # Create a VideoCapture object from the file path
+        cap = cv2.VideoCapture(video_path)
+
+        # Check if the VideoCapture object is opened successfully
+        if cap.isOpened() == False:
+            return False
+
+        # Create a named window for displaying the video
+        cv2.namedWindow("Video Player", cv2.WINDOW_NORMAL)
+
+        # Loop until the end of the video or until the user presses Q or Esc keys
+        while cap.isOpened():
+            # Read a frame from the VideoCapture object
+            ret, frame = cap.read()
+            # If ret is True, display the frame in the window
+            if ret == True:
+                cv2.imshow("Video Player", frame)
+                # Wait for 25 ms or until a key is pressed
+                key = cv2.waitKey(25)
+                # If Q or Esc keys are pressed, break out of the loop and close the window
+                if key == ord("Q") or key == ord("q") or key == 27:
+                    break
+            # If ret is False, break out of the loop and close the window
+            else:
+                break
+
+        # Release the VideoCapture object and destroy all windows
+        cap.release()
+        cv2.destroyAllWindows()
+
+
 
     def get_id(self):
         return self.id
