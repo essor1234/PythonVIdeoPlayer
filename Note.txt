@@ -1,0 +1,40 @@
+----- model------
+- video
+- Playlist
+
+
+----- Functions-----
+---VIdeos
+- check video
+- searching video(name, director, rate, id)
+- update video
+- add video---> add name, director, rate, id added automatically
+- delete video
+- play video individualy
+-----Playlist
+- searching playlist(id, name)
+- create playlist
+- update playlist
+- play playlist
+- delete playlist
+
+-------data------
+-----videos
+- save videos in a directory
+- save videos inforamtion in a csv file
+-----Playlist
+- save playlist information in a csv file
+
+------- library using-------
+- os package (for defining path)
+- pytube package (for dowloading youtube video)
+- tkinter (UI)
+- cv2 (for playing video)
+- pandas (for reading file)
+
+
+
+
+-----Note------
+-----VIdeoManager
+- lsitbox can display thumbnail of the video
