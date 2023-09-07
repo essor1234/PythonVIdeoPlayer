@@ -11,6 +11,7 @@ class Playlist:
         self.length = 0
         self.video_ids = []
 
+    @classmethod
     def get_playlist_data(self):
         df = pd.read_csv(self.playlist_relative_path, header=0)
         all_playlist = []
@@ -78,12 +79,14 @@ class Playlist:
 
     def get_length(self):
         df = pd.read_csv(self.playlist_relative_path)
-        self.length = df.length
+        length = df.loc[df.id == self.id, "length"].values[0]
+        self.length = length
         return self.length
 
     def get_video_ids(self):
         df = pd.read_csv(self.playlist_relative_path)
-        self.video_ids = df.video_id
+        video_ids = df.loc[df.id == self.id, "video_id"].values[0]
+        self.video_ids = video_ids
         return self.video_ids
 
 

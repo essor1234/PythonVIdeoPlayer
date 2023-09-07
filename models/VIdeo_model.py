@@ -19,7 +19,7 @@ class Video:
         self.path = path
         self.rate = 0
         self.plays = 0
-
+    @classmethod
     def get_video_data(self):
         df = pd.read_csv(self.video_relative_path)
         all_videos = []
@@ -157,7 +157,13 @@ class Video:
         return self.path
 
     def get_rate(self):
+        df = pd.read_csv(self.video_relative_path)
+        rate = df.loc[df.id == self.id, "rate"].values[0]
+        self.rate = rate
         return self.rate
 
     def get_plays(self):
+        df = pd.read_csv(self.video_relative_path)
+        plays = df.loc[df.id == self.id, "plays"].values[0]
+        self.plays = plays
         return self.plays
