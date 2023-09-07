@@ -3,6 +3,8 @@ import tkinter.ttk as ttk
 import tkinter.font as tkfont
 from ttkthemes import ThemedTk
 
+from controller.video_controller import video_controller
+from models.VIdeo_model import Video
 class VideoManager(tk.Frame):
     columns = ["Id", "Title", "Director", "Rate"]
     def __init__(self, parent, controller):
@@ -90,6 +92,117 @@ class VideoManager(tk.Frame):
         """Play button"""
         self.play_btn = ttk.Button(self.listbox_frame, text="PLay", width=70)
         self.play_btn.grid(row=3, column=0, padx=10, pady=10)
+
+
+    def check_video(self):
+        # get video_id from treeview (in a tuple)
+        video_ids = self.main_display.selection()
+        # clear list box
+        self.listbox.delete(0, tk.END)
+
+        for video_id in video_ids:
+            values = self.main_display.item(video_id, "values")
+            try:
+                video_key = int(values[0])
+            except IndexError:
+                return False
+
+            if video_controller.check_video(video_key) == False:
+                break
+            # run method
+            video_title, video_director, video_rate, video_plays = video_controller.check_video(video_key)
+            # insert video into list box
+            self.listbox.insert(tk.END, video_title)
+            self.listbox.insert(tk.END, video_director)
+            self.listbox.insert(tk.END, "Rate: " + str(video_rate))
+            self.listbox.insert(tk.END, "PLays: " + str(video_plays))
+
+    def update_video(self):
+        pass
+
+    def add_video(self):
+        pass
+
+    def delete_video(self):
+        seleted_item = self.main_display.focus()
+        if not seleted_item:
+            """TODO: create warning later"""
+            return False
+        #get video id
+        try:
+            video_id = int(self.main_display.item(seleted_item, "values")[0])
+        except ValueError:
+            video_id= -1
+        # call delete method
+        is_deleted = Video.delete_video(video_id)
+        # check if video is deleted in data or not
+        if is_deleted:
+            self.main_display.delete(seleted_item)
+
+
+
+    def play_video(self):
+        selected_item = self.main_display.focus()
+        # check if is there selected_item or not
+        if not selected_item:
+            """TODO: create warning later"""
+            return False
+
+        try:
+            video_id = int(self.main_display.item(selected_item, "values")[0])
+        except ValueError:
+            video_id = -1
+        # play video chosen
+        Video.play_video(video_id)
+        # increase play count
+        Video.increase_play(video_id)
+
+
+
+    def search_video(self, selected_mode):
+        search_value = self.search_entry.get()
+        # clear treview
+        self.main_display.delete(*self.main_display.get_children())
+        if not search_value:
+            """ return warning later"""
+            return False
+
+        # choose mode part
+        if selected_mode == "Title":
+            try:
+                for video in video_controller.find_video_by_title(search_value):
+                    self.main_display.insert("", "end", values=(video[0], video[1]. video[2], "*" * int(video[3])))
+            except TypeError:
+                """ return warning later"""
+                return False
+
+        elif selected_mode == "Director":
+            try:
+                for video in video_controller.find_video_by_director(search_value):
+                    self.main_display.insert("", "end", values=(video[0], video[1]. video[2], "*" * int(video[3])))
+            except TypeError:
+                """ return warning later"""
+                return False
+
+        elif selected_mode == "Id":
+            try:
+                for video in video_controller.find_video_by_id(int(search_value)):
+                    self.main_display.insert("", "end", values=(video[0], video[1].video[2], "*" * int(video[3])))
+            except ValueError:
+                return False
+            except IndexError:
+                return False
+
+        elif selected_mode == "Rate":
+            try:
+                for video in video_controller.find_video_by_id(int(search_value)):
+                    self.main_display.insert("", "end", values=(video[0], video[1].video[2], "*" * int(video[3])))
+            except ValueError:
+                return False
+            except IndexError:
+                return False
+
+
 
 
 if __name__ == "__main__":

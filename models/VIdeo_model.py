@@ -33,6 +33,7 @@ class Video:
             all_videos.append(video)
         return all_videos
 
+    @classmethod
     def increase_play(self, video_id):
         df = pd.read_csv(self.video_relative_path)
         try:
@@ -44,6 +45,7 @@ class Video:
         except AttributeError:
             return False
 
+    @classmethod
     def delete_video(self, video_id):
         df = pd.read_csv(self.video_relative_path, header=0)
         # keep rows not have the same id with video_id
@@ -54,6 +56,7 @@ class Video:
         except:
             return False
 
+    @classmethod
     def update_video(self, video_id, video_title, video_director, video_path, video_rate, video_plays):
         df = pd.read_csv(self.video_relative_path, header=0)
         try:
@@ -103,6 +106,7 @@ class Video:
         path = os.rename(filename, self.video_stored_relative_path + "/" + os.path.basename(filename))
         return path
 
+    @classmethod
     def play_video(self, video_id):
         video_list = self.get_video_data()
         video_path = None
@@ -167,3 +171,4 @@ class Video:
         plays = df.loc[df.id == self.id, "plays"].values[0]
         self.plays = plays
         return self.plays
+

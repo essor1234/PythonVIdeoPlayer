@@ -64,9 +64,13 @@ class VideoController:
 
       return video_list
 
+    """check video"""
     def check_video(self, video_id):
       for video in self.data:
         if video_id == video.id:
           return video.title, video.director, video.rate, video.plays
 
       return False
+
+
+video_controller = VideoController()
