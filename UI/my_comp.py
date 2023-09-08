@@ -39,6 +39,8 @@ class FromMyComputer(tk.Frame):
         self.save_btn = ttk.Button(self.parent, text="Save", command=None)
         self.save_btn.config(width=50)
         self.save_btn.grid(columnspan=3, padx=5, pady=5)
+
+
 if __name__ == "__main__":
     # Create a themed window with the desired theme name
     window = ThemedTk(theme="arc")

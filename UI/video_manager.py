@@ -5,8 +5,13 @@ from ttkthemes import ThemedTk
 
 from controller.video_controller import video_controller
 from models.VIdeo_model import Video
+
+from UI.add_video import AddVideo
+from UI.update_video import UpdateVideo
 class VideoManager(tk.Frame):
     columns = ["Id", "Title", "Director", "Rate"]
+
+
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
@@ -15,6 +20,7 @@ class VideoManager(tk.Frame):
         # window display
         self.root = self.parent
         self.root.title("Video Manager")
+        self.top_open = False
 
         """Search function"""
         # Create a frame for the search bar
@@ -60,15 +66,15 @@ class VideoManager(tk.Frame):
         self.function_btn_frame.grid(row=0, column=0, padx=5, pady=5, sticky="W")
         # add button
         self.add_btn = ttk.Button(self.function_btn_frame, text="Add Video", compound="left",
-                                  command=None)
+                                  command=self.add_video)
         self.add_btn.grid(row=0, column=0, ipady=20, ipadx=20)
         # update button
         self.update_btn = ttk.Button(self.function_btn_frame, text="Update Video", compound="left",
-                                  command=None)
+                                    command=self.update_video)
         self.update_btn.grid(row=1, column=0, ipady=5, ipadx=5, padx=10, pady=10)
         # delete button
         self.delete_btn = ttk.Button(self.function_btn_frame, text="Delete Video", compound="left",
-                                     command=None)
+                                     command=self.delete_video)
         self.delete_btn.grid(row=2, column=0, ipady=5, ipadx=5, padx=10, pady=10)
 
         """Display"""
@@ -110,18 +116,54 @@ class VideoManager(tk.Frame):
             if video_controller.check_video(video_key) == False:
                 break
             # run method
-            video_title, video_director, video_rate, video_plays = video_controller.check_video(video_key)
+            video_title, video_director, video_rate, video_plays, video_path = video_controller.check_video(video_key)
             # insert video into list box
             self.listbox.insert(tk.END, video_title)
             self.listbox.insert(tk.END, video_director)
             self.listbox.insert(tk.END, "Rate: " + str(video_rate))
             self.listbox.insert(tk.END, "PLays: " + str(video_plays))
 
+    def info_for_chosen_video(self):
+        try:
+            get_video = self.main_display.focus()
+            # get id
+            video = self.main_display.item(get_video, "values")
+            try:
+                video_id = int(video[0])
+            except ValueError:
+                video_id = -1
+            # run method
+            video_title, video_director, video_rate, video_plays, video_path = video_controller.check_video(video_id)
+
+            return video_title, video_director, video_rate, video_plays, video_path, video_id
+        except IndexError:
+            return False
+    def update_video_window_display(self):
+        get_video = self.main_display.focus()
+        if get_video:
+            if not self.top_open:
+                self.top_open = True
+                # create a Toplevel widget
+                new_window = tk.Toplevel(self)
+                # create a CheckVideo frame inside the new window
+                check_video_frame = UpdateVideo(new_window, self)
+                # create name
+                check_video_frame.grid()
+                new_window.protocol("WM_DELETE_WINDOW", lambda: self.close_top(new_window))
+
     def update_video(self):
-        pass
+        self.info_for_chosen_video()
+        self.update_video_window_display()
 
     def add_video(self):
-        pass
+        # Access the global flag variable
+        # Check if the flag is False, meaning no Toplevel window is open
+        if not self.top_open:
+            self.top_open = True
+            new_window = tk.Toplevel(self)
+            frame = AddVideo(new_window)
+            frame.grid()
+            new_window.protocol("WM_DELETE_WINDOW", lambda: self.close_top(new_window))
 
     def delete_video(self):
         seleted_item = self.main_display.focus()
@@ -202,7 +244,11 @@ class VideoManager(tk.Frame):
             except IndexError:
                 return False
 
-
+    # use for prevent multiple instances
+    def close_top(self, top_window):
+        self.top_open = False
+        # Destroy the Toplevel window
+        top_window.destroy()
 
 
 if __name__ == "__main__":

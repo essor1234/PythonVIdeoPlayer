@@ -40,6 +40,7 @@ class Video:
             video_id = int(video_id)
             df.loc[df.id == video_id, "plays"] += 1
             self.plays = df.loc[df.id == video_id, "plays"].item()
+            # update data
             df.to_csv(self.video_relative_path, index=False)
             return df
         except AttributeError:
@@ -50,8 +51,11 @@ class Video:
         df = pd.read_csv(self.video_relative_path, header=0)
         # keep rows not have the same id with video_id
         df = df[df.id != video_id]
+        path = df.loc[df.id == video_id, "path"].value[0]
         try:
+
             df.to_csv(self.video_relative_path, index=False)
+            os.remove(path)
             return True
         except:
             return False
