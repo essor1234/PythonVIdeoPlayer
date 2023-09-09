@@ -96,7 +96,8 @@ class VideoManager(tk.Frame):
         self.listbox.grid(row=1, column=0, rowspan=2, padx=10, pady=10)
 
         """Play button"""
-        self.play_btn = ttk.Button(self.listbox_frame, text="PLay", width=70)
+        self.play_btn = ttk.Button(self.listbox_frame, text="PLay", width=70,
+                                   command=self.play_video)
         self.play_btn.grid(row=3, column=0, padx=10, pady=10)
 
 

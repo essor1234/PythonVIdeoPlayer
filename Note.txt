@@ -38,3 +38,10 @@
 -----Note------
 -----VIdeoManager
 - lsitbox can display thumbnail of the video
+
+
+----my comp
+- choose a video in device cannot return the path
+
+----- youtube
+- cannot add data into csv file

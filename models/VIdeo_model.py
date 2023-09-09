@@ -9,7 +9,7 @@ class Video:
     video_file = "../data/video_data.csv"
     video_relative_path = os.path.relpath(video_file)
 
-    video_stored_file = "..data/videos_stored"
+    video_stored_file = os.path.join("..", "data", "videos_stored")
     video_stored_relative_path = os.path.relpath(video_stored_file)
 
     def __init__(self, id, title, director, path):
@@ -85,30 +85,33 @@ class Video:
         # generate a new id by incrementing the maximum id in the file
         new_id = df.id.max()+1
         # create a new row with the given parameters
-        new_row = [new_id, video_title, video_director, self.rate, self.plays, video_path]
+        new_row = [new_id, video_title, video_director, 0, 0, video_path]
         # append the new row to the end of the dataframe
         df.loc[len(df)] = new_row
 
-
     def get_video_through_youtube(self, video_title, video_url):
-        video_title += ".mp4"
+        base_name, ext = os.path.splitext(video_title)
+        video_title = os.path.join(base_name + ".mp4")
+
         try:
             yt = YouTube(video_url)
             stream = yt.streams.get_highest_resolution()
-            stream.download(filename=video_title)
-            path = stream.download(output_path=self.video_stored_relative_path)
+            path = stream.download(filename=video_title, output_path=self.video_stored_relative_path)
             return path
         except Exception:
             return False
 
-
+    @classmethod
     def get_video_through_device(self):
         """Video part"""
-        # Show a file dialog that only accepts video files
-        filename = fd.askopenfilename(filetypes=[("Video files", "*.mp4;*.avi;*.mov")])
-        # Move the selected video file to a new folder
-        path = os.rename(filename, self.video_stored_relative_path + "/" + os.path.basename(filename))
-        return path
+        try:
+            # Show a file dialog that only accepts video files
+            filename = fd.askopenfilename(filetypes=[("Video files", "*.mp4;*.avi;*.mov")])
+            # Move the selected video file to a new folder
+            path = os.rename(filename, self.video_stored_relative_path + "/" + os.path.basename(filename))
+            return path
+        except FileNotFoundError:
+            return False
 
     @classmethod
     def play_video(self, video_id):

@@ -2,8 +2,9 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from ttkthemes import ThemedTk
 
+from models.VIdeo_model import Video
 
-class FromMyComputer(tk.Frame):
+class FromMyComputer(tk.Frame, Video):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
 
@@ -26,19 +27,45 @@ class FromMyComputer(tk.Frame):
         self.get_director.grid(row=1, column=1, columnspan=3, sticky="w", padx=5, pady=5)
 
         # path label
-        self.get_rate_lbl = ttk.Label(self.parent, text="Path: ")
-        self.get_rate_lbl.grid(row=3, column=0, padx=5, pady=5)
+        self.get_path_lbl = ttk.Label(self.parent, text="Path: ")
+        self.get_path_lbl.grid(row=3, column=0, padx=5, pady=5)
         # path entry
-        self.get_rate = tk.Entry(self.parent, highlightthickness=1)
-        self.get_rate.grid(row=3, column=1, columnspan=3, sticky="w", padx=5, pady=5)
+        self.get_path = tk.Entry(self.parent, highlightthickness=1)
+        self.get_path.grid(row=3, column=1, columnspan=3, sticky="w", padx=5, pady=5)
         # Choose video button
-        self.video_btn = ttk.Button(self.parent, text="Choose Video")
+        self.video_btn = ttk.Button(self.parent, text="Choose Video",
+                                    command= self.choose_video)
         self.video_btn.grid(row=4, column=0, columnspan=3, padx=5, pady=5)
 
         # save button
-        self.save_btn = ttk.Button(self.parent, text="Save", command=None)
+        self.save_btn = ttk.Button(self.parent, text="Save",
+                                   command=self.save_video)
         self.save_btn.config(width=50)
         self.save_btn.grid(columnspan=3, padx=5, pady=5)
+
+    def choose_video(self):
+
+        path = Video.get_video_through_device()
+
+        if path == False:
+            pass
+        self.get_path.delete(0, tk.END)
+        self.get_path.insert(0, path)
+
+
+    def save_video(self):
+        current_title = self.get_title.get()
+        current_director = self.get_director.get()
+        current_path = self.get_path.get()
+        """TODO: add waring later"""
+        if not current_title:
+            return False
+        elif not current_director:
+            return False
+        elif not current_path:
+            return False
+
+        Video.add_video_to_data(self, current_title, current_director, current_path)
 
 
 if __name__ == "__main__":
