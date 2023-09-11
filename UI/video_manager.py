@@ -22,35 +22,7 @@ class VideoManager(tk.Frame):
         self.root.title("Video Manager")
         self.top_open = False
 
-        """Search function"""
-        # Create a frame for the search bar
-        self.search_frame = ttk.Frame(self)
-        self.search_frame.grid(row=0, column=3, columnspan=3, padx=5, pady=5, sticky="NE")
 
-        # Create a label for the search bar
-        search_label = ttk.Label(self.search_frame, text="Search by:")
-        search_label.grid(row=0, column=0)
-
-        # Create entry widget
-        self.search_entry = ttk.Entry(self.search_frame)
-        self.search_entry.grid(row=0, column=1)
-
-        # Create a list of search options
-        search_options = ["Title", "Director", "Rate", "Id"]
-        # Create a variable to store the selected option
-        self.selected_option = tk.StringVar()
-        # Set the default value of the variable to the first option
-        self.selected_option.set(search_options[0])
-        # Create a Combobox for the search options
-        self.search_combobox = ttk.Combobox(self.search_frame, textvariable=self.selected_option, values=search_options)
-        self.search_combobox.config(width=10)
-        self.search_combobox.grid(row=0, column=2)
-
-        # Create a button to check a video
-        btn_check_video = ttk.Button(self.search_frame, text="Search", compound="left",
-                                     command=None)
-        btn_check_video.config(width=15)
-        btn_check_video.grid(row=0, column=3)
 
         """Warning area"""
         # Create a style object
@@ -95,12 +67,46 @@ class VideoManager(tk.Frame):
         self.listbox = tk.Listbox(self.listbox_frame, height=12, width=60)
         self.listbox.grid(row=1, column=0, rowspan=2, padx=10, pady=10)
 
+        """Search function"""
+        # Create a frame for the search bar
+        self.search_frame = ttk.Frame(self)
+        self.search_frame.grid(row=0, column=3, columnspan=3, padx=5, pady=5, sticky="NE")
+
+        # Create a label for the search bar
+        search_label = ttk.Label(self.search_frame, text="Search by:")
+        search_label.grid(row=0, column=0)
+
+        # Create entry widget
+        self.search_entry = ttk.Entry(self.search_frame)
+        self.search_entry.grid(row=0, column=1)
+
+        # Create a list of search options
+        search_options = ["Title", "Director", "Rate", "Id"]
+        # Create a variable to store the selected option
+        self.selected_option = tk.StringVar()
+        # Set the default value of the variable to the first option
+        self.selected_option.set(search_options[0])
+        # Create a Combobox for the search options
+        self.search_combobox = ttk.Combobox(self.search_frame, textvariable=self.selected_option, values=search_options)
+        self.search_combobox.config(width=10)
+        self.search_combobox.grid(row=0, column=2)
+
+        # Create a button to check a video
+        btn_check_video = ttk.Button(self.search_frame, text="Search", compound="left",
+                                     command=lambda: self.search_video(self.search_combobox.get()))
+        btn_check_video.config(width=15)
+        btn_check_video.grid(row=0, column=3)
+
         """Play button"""
         self.play_btn = ttk.Button(self.listbox_frame, text="PLay", width=70,
                                    command=self.play_video)
         self.play_btn.grid(row=3, column=0, padx=10, pady=10)
 
 
+        self.list_all()
+    def list_all(self):
+        for video in video_controller.list_video():
+            self.main_display.insert("", "end", values=(video[0], video[1], video[2], "*" * int(video[3])))
     def check_video(self):
         # get video_id from treeview (in a tuple)
         video_ids = self.main_display.selection()
@@ -214,7 +220,7 @@ class VideoManager(tk.Frame):
         if selected_mode == "Title":
             try:
                 for video in video_controller.find_video_by_title(search_value):
-                    self.main_display.insert("", "end", values=(video[0], video[1]. video[2], "*" * int(video[3])))
+                    self.main_display.insert("", "end", values=(video[0], video[1], video[2], "*" * int(video[3])))
             except TypeError:
                 """ return warning later"""
                 return False
@@ -222,7 +228,7 @@ class VideoManager(tk.Frame):
         elif selected_mode == "Director":
             try:
                 for video in video_controller.find_video_by_director(search_value):
-                    self.main_display.insert("", "end", values=(video[0], video[1]. video[2], "*" * int(video[3])))
+                    self.main_display.insert("", "end", values=(video[0], video[1], video[2], "*" * int(video[3])))
             except TypeError:
                 """ return warning later"""
                 return False
@@ -230,7 +236,7 @@ class VideoManager(tk.Frame):
         elif selected_mode == "Id":
             try:
                 for video in video_controller.find_video_by_id(int(search_value)):
-                    self.main_display.insert("", "end", values=(video[0], video[1].video[2], "*" * int(video[3])))
+                    self.main_display.insert("", "end", values=(video[0], video[1], video[2], "*" * int(video[3])))
             except ValueError:
                 return False
             except IndexError:
@@ -238,8 +244,8 @@ class VideoManager(tk.Frame):
 
         elif selected_mode == "Rate":
             try:
-                for video in video_controller.find_video_by_id(int(search_value)):
-                    self.main_display.insert("", "end", values=(video[0], video[1].video[2], "*" * int(video[3])))
+                for video in video_controller.find_video_by_rate(int(search_value)):
+                    self.main_display.insert("", "end", values=(video[0], video[1], video[2], "*" * int(video[3])))
             except ValueError:
                 return False
             except IndexError:

@@ -32,7 +32,7 @@ class VideoController:
       """can cause rate = 0"""
       video_list = []
       for video in self.data:
-        if video_title == video.title:
+        if video_title.lower().replace(" ", "") == video.title.lower().replace(" ", ""):
           video_list.append([video.id, video.title, video.director, video.rate])
       if not video_list:
         return False
@@ -44,7 +44,7 @@ class VideoController:
       """can cause rate = 0"""
       video_list = []
       for video in self.data:
-        if video_director == video.director:
+        if video_director.lower().replace(" ", "") == video.director.lower().replace(" ", ""):
           video_list.append([video.id, video.title, video.director, video.rate])
       # check if there is video in video_list
       if not video_list:

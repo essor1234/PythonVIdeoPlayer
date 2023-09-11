@@ -45,13 +45,11 @@ class FromMyComputer(tk.Frame, Video):
 
     def choose_video(self):
 
-        path = Video.get_video_through_device()
-
-        if path == False:
+        self.filename, self.path = Video.choose_file(self)
+        if self.path == False:
             pass
         self.get_path.delete(0, tk.END)
-        self.get_path.insert(0, path)
-
+        self.get_path.insert(0, self.path)
 
     def save_video(self):
         current_title = self.get_title.get()
@@ -64,8 +62,10 @@ class FromMyComputer(tk.Frame, Video):
             return False
         elif not current_path:
             return False
-
+        # run method
         Video.add_video_to_data(self, current_title, current_director, current_path)
+        Video.move_file(self, self.filename, self.path)
+
 
 
 if __name__ == "__main__":

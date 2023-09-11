@@ -3,10 +3,10 @@ import pandas as pd
 from tkinter import filedialog as fd
 from pytube import YouTube
 import os
-
+import vlc
 
 class Video:
-    video_file = "../data/video_data.csv"
+    video_file = os.path.join("..", "data", "video_data.csv")
     video_relative_path = os.path.relpath(video_file)
 
     video_stored_file = os.path.join("..", "data", "videos_stored")
@@ -50,11 +50,17 @@ class Video:
     def delete_video(self, video_id):
         df = pd.read_csv(self.video_relative_path, header=0)
         # keep rows not have the same id with video_id
-        df = df[df.id != video_id]
-        path = df.loc[df.id == video_id, "path"].value[0]
+        df_new = df[df.id != video_id]
+        df_old = df[df.id == video_id]
+        # check if there is valid id
+        if df_old.empty:
+            print("No video with the given id found.")
+            return False
+        # get path
+        path = df_old["path"].values[0]
+        # update data
         try:
-
-            df.to_csv(self.video_relative_path, index=False)
+            df_new.to_csv(self.video_relative_path, index=False)
             os.remove(path)
             return True
         except:
@@ -83,35 +89,46 @@ class Video:
         """Data part"""
         df = pd.read_csv(self.video_relative_path, header=0)
         # generate a new id by incrementing the maximum id in the file
-        new_id = df.id.max()+1
+        # check if there is any video yet
+        if "id" in df.columns and not df['id'].isnull().all():
+            new_id = df.id.max() + 1
+        else:
+            new_id = 1
+        print(new_id)
         # create a new row with the given parameters
         new_row = [new_id, video_title, video_director, 0, 0, video_path]
         # append the new row to the end of the dataframe
         df.loc[len(df)] = new_row
+        try:
+            df.to_csv(self.video_relative_path, index=False)
+            return True
+        except:
+            return False
 
     def get_video_through_youtube(self, video_title, video_url):
         base_name, ext = os.path.splitext(video_title)
         video_title = os.path.join(base_name + ".mp4")
 
         try:
+            # get URL
             yt = YouTube(video_url)
+            # dowload
             stream = yt.streams.get_highest_resolution()
-            path = stream.download(filename=video_title, output_path=self.video_stored_relative_path)
-            return path
+            absolute_path = stream.download(filename=video_title, output_path=self.video_stored_relative_path)
+            relative_path = os.path.relpath(absolute_path, start=os.getcwd())
+            return relative_path
         except Exception:
             return False
 
-    @classmethod
-    def get_video_through_device(self):
-        """Video part"""
-        try:
-            # Show a file dialog that only accepts video files
-            filename = fd.askopenfilename(filetypes=[("Video files", "*.mp4;*.avi;*.mov")])
-            # Move the selected video file to a new folder
-            path = os.rename(filename, self.video_stored_relative_path + "/" + os.path.basename(filename))
-            return path
-        except FileNotFoundError:
-            return False
+
+    def choose_file(self):
+        filename = fd.askopenfilename(filetypes=[("Video files", "*.mp4;*.avi;*.mov")])
+        # Move the selected video file to a new folder
+        new_path = os.path.join(self.video_stored_relative_path, os.path.basename(filename))
+        return filename, new_path
+
+    def move_file(self, filename, path):
+        os.rename(filename, path)
 
     @classmethod
     def play_video(self, video_id):
@@ -120,38 +137,15 @@ class Video:
         for video in video_list:
             if video.id == video_id:
                 video_path = video.path
-        # check if there is any video path
+
         if video_path is None:
             return False
-        # Create a VideoCapture object from the file path
-        cap = cv2.VideoCapture(video_path)
 
-        # Check if the VideoCapture object is opened successfully
-        if cap.isOpened() == False:
-            return False
+        # create a player object
+        player = vlc.MediaPlayer(video_path)
 
-        # Create a named window for displaying the video
-        cv2.namedWindow("Video Player", cv2.WINDOW_NORMAL)
-
-        # Loop until the end of the video or until the user presses Q or Esc keys
-        while cap.isOpened():
-            # Read a frame from the VideoCapture object
-            ret, frame = cap.read()
-            # If ret is True, display the frame in the window
-            if ret == True:
-                cv2.imshow("Video Player", frame)
-                # Wait for 25 ms or until a key is pressed
-                key = cv2.waitKey(25)
-                # If Q or Esc keys are pressed, break out of the loop and close the window
-                if key == ord("Q") or key == ord("q") or key == 27:
-                    break
-            # If ret is False, break out of the loop and close the window
-            else:
-                break
-
-        # Release the VideoCapture object and destroy all windows
-        cap.release()
-        cv2.destroyAllWindows()
+        # play video
+        player.play()
 
 
 

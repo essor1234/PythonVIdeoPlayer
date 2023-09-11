@@ -52,6 +52,7 @@ class FromYoutube(tk.Frame, Video):
             return False
 
         path = Video.get_video_through_youtube(self, current_title, current_url)
+        print(path)
         Video.add_video_to_data(self, current_title, current_director, path)
 
 

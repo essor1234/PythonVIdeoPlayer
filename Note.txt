@@ -38,10 +38,17 @@
 -----Note------
 -----VIdeoManager
 - lsitbox can display thumbnail of the video
+- search function update search for unrated video(if need)
+- update function cannot not get video data yet
+- play video feature cannot hear sound, cannot turn it off(should be able to forwrd and backward)
+
 
 
 ----my comp
 - choose a video in device cannot return the path
 
 ----- youtube
-- cannot add data into csv file
+- cannot add data into csv file  -->fix
+- need pop up window when dowloading and when dowload finish
+
+
