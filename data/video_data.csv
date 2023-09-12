@@ -1,2 +1,3 @@
 id,title,director,rate,plays,path
-1,test 3,dir 3,0,2,..\data\videos_stored\1st.mp4
+1,test 1,direc 1,4,9,..\data\videos_stored\test 1.mp4
+2,test 2,director 2,0,16,..\data\videos_stored\test 2.mp4

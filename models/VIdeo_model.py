@@ -1,9 +1,9 @@
-import cv2
 import pandas as pd
 from tkinter import filedialog as fd
 from pytube import YouTube
 import os
 import vlc
+from pynput import keyboard, mouse
 
 class Video:
     video_file = os.path.join("..", "data", "video_data.csv")
@@ -144,10 +144,31 @@ class Video:
         # create a player object
         player = vlc.MediaPlayer(video_path)
 
-        # play video
-        player.play()
 
 
+        def on_click(x, y, button, pressed):
+            if button == mouse.Button.left and pressed:
+                if player.is_playing():
+                    player.pause()
+                else:
+                    player.play()
+
+        def on_press(key):
+            if key == keyboard.Key.space:
+                if player.is_playing():
+                    player.pause()
+                else:
+                    player.play()
+
+        # Listen to mouse click
+        with mouse.Listener(on_click=on_click) as listener:
+            listener.join()
+
+        # Listen to space key press
+        with keyboard.Listener(on_press=on_press) as listener:
+            listener.join()
+
+        player.stop()  # Stops the video
 
     def get_id(self):
         return self.id

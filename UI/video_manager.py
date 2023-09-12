@@ -12,9 +12,9 @@ class VideoManager(tk.Frame):
     columns = ["Id", "Title", "Director", "Rate"]
 
 
-    def __init__(self, parent, controller):
+    def __init__(self, parent):
         tk.Frame.__init__(self, parent)
-        self.controller = controller
+
 
         self.parent= parent
         # window display
@@ -141,7 +141,6 @@ class VideoManager(tk.Frame):
                 video_id = -1
             # run method
             video_title, video_director, video_rate, video_plays, video_path = video_controller.check_video(video_id)
-
             return video_title, video_director, video_rate, video_plays, video_path, video_id
         except IndexError:
             return False
@@ -265,6 +264,6 @@ if __name__ == "__main__":
     style = ttk.Style(window)
 
 
-    app = VideoManager(window, None)
+    app = VideoManager(window)
     app.pack()
     window.mainloop()

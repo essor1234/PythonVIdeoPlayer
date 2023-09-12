@@ -2,7 +2,8 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from ttkthemes import ThemedTk
 
-class UpdateVideo(tk.Frame):
+from models.VIdeo_model import Video
+class UpdateVideo(tk.Frame, Video):
     def __init__(self, parent, video_manager):
         tk.Frame.__init__(self, parent)
 
@@ -41,11 +42,11 @@ class UpdateVideo(tk.Frame):
         self.get_rate.grid(row=2, column=1, columnspan=3, sticky="w", padx=5, pady=5)
 
         # path label
-        self.get_rate_lbl = ttk.Label(self.get_frame, text="Path: ")
-        self.get_rate_lbl.grid(row=3, column=0, padx=5, pady=5)
+        self.get_path_lbl = ttk.Label(self.get_frame, text="Path: ")
+        self.get_path_lbl.grid(row=3, column=0, padx=5, pady=5)
         # path entry
-        self.get_rate = tk.Entry(self.get_frame, highlightthickness=1)
-        self.get_rate.grid(row=3, column=1, columnspan=3, sticky="w", padx=5, pady=5)
+        self.get_path = tk.Entry(self.get_frame, highlightthickness=1)
+        self.get_path.grid(row=3, column=1, columnspan=3, sticky="w", padx=5, pady=5)
 
 
 
@@ -57,14 +58,60 @@ class UpdateVideo(tk.Frame):
         self.get_plays.grid(row=4, column=1, columnspan=3, sticky="w", padx=5, pady=5)
 
         # plays reset button
-        self.reset_btn = ttk.Button(self.get_frame, text="Reset", command=None)
+        self.reset_btn = ttk.Button(self.get_frame, text="Reset",
+                                    command=self.reset_play)
         self.reset_btn.grid(row=4, column=2, columnspan=3, padx=5, pady=5)
 
 
         # save button
-        self.save_btn = ttk.Button(self.root, text="Save", command=None)
+        self.save_btn = ttk.Button(self.root, text="Save",
+                                   command=self.save_function)
         self.save_btn.config(width=50)
         self.save_btn.grid(columnspan=3, padx=5, pady=5)
+
+        self.get_video_info()
+    def get_video_info(self):
+        video_title, video_director, video_rate, video_plays, video_path, video_id = self.update_video.info_for_chosen_video()
+        self.get_title.insert(0, video_title)
+        self.get_director.insert(0, video_director)
+        self.get_rate.insert(0, video_rate)
+        self.get_path.insert(0, video_path)
+        self.get_plays.insert(tk.END, video_plays)
+
+
+    def reset_play(self):
+        self.get_plays.delete(0, tk.END)
+        self.get_plays.insert(tk.END, 0)
+
+    def save_function(self):
+        video_title, video_director, video_rate, video_plays, video_path, video_id = self.update_video.info_for_chosen_video()
+        current_title = self.get_title.get()
+        current_director = self.get_director.get()
+        current_rate = self.get_rate.get()
+        current_path = self.get_path.get()
+        current_play = self.get_plays.get(tk.ACTIVE)
+        try:
+            current_rate = int(current_rate)
+        except (TypeError, ValueError):
+            """ TODO: warning feature later"""
+            return False
+
+        if not current_title:
+            return False
+
+        elif not current_director:
+            return False
+        elif not current_path:
+            return False
+
+        elif not current_rate or current_rate > 5:
+            if not self.warning_shown:
+               return False
+        else:
+            Video.update_video(video_id, current_title, current_director, current_path, current_rate, current_play)
+            self.root.destroy()
+
+
 
 
 if __name__ == "__main__":
