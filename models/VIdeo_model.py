@@ -130,7 +130,7 @@ class Video:
     def move_file(self, filename, path):
         os.rename(filename, path)
 
-    @classmethod
+    """@classmethod
     def play_video(self, video_id):
         video_list = self.get_video_data()
         video_path = None
@@ -161,14 +161,18 @@ class Video:
                     player.play()
 
         # Listen to mouse click
-        with mouse.Listener(on_click=on_click) as listener:
-            listener.join()
+        mouse_listener = mouse.Listener(on_click=on_click)
+        mouse_listener.start()
 
         # Listen to space key press
-        with keyboard.Listener(on_press=on_press) as listener:
-            listener.join()
+        keyboard_listener = keyboard.Listener(on_press=on_press)
+        keyboard_listener.start()
 
-        player.stop()  # Stops the video
+        # Wait for both listeners to stop
+        mouse_listener.join()
+        keyboard_listener.join()
+
+        player.stop()  # Stops the video"""
 
     def get_id(self):
         return self.id

@@ -2,9 +2,12 @@ import tkinter as tk
 import tkinter.ttk as ttk
 import tkinter.font as tkfont
 from ttkthemes import ThemedTk
-
+from PyQt5 import QtWidgets
+import sys
+import socket
 from controller.video_controller import video_controller
 from models.VIdeo_model import Video
+from models.Player_model import Player
 
 from UI.add_video import AddVideo
 from UI.update_video import UpdateVideo
@@ -21,8 +24,7 @@ class VideoManager(tk.Frame):
         self.root = self.parent
         self.root.title("Video Manager")
         self.top_open = False
-
-
+        self.pack(fill='both', expand=True)
 
         """Warning area"""
         # Create a style object
@@ -189,7 +191,8 @@ class VideoManager(tk.Frame):
 
 
 
-    def play_video(self):
+    def return_video_path(self):
+
         selected_item = self.main_display.focus()
         # check if is there selected_item or not
         if not selected_item:
@@ -200,10 +203,30 @@ class VideoManager(tk.Frame):
             video_id = int(self.main_display.item(selected_item, "values")[0])
         except ValueError:
             video_id = -1
+
+        video_list = Video.get_video_data()
+        video_path = None
+        for video in video_list:
+            if video.id == video_id:
+                video_path = video.path
+
+        if video_path is None:
+            return False
+
+        return video_path, video_id
+
         # play video chosen
-        Video.play_video(video_id)
-        # increase play count
+        # Create a Qt Application
+
+    def play_video(self):
+        video_path, video_id = self.return_video_path()
+        app = QtWidgets.QApplication(sys.argv)
+        player = Player(video_path)
         Video.increase_play(video_id)
+        player.show()
+        player.resize(640, 480)
+        sys.exit(app.exec_())
+
 
 
 
@@ -259,11 +282,9 @@ class VideoManager(tk.Frame):
 
 if __name__ == "__main__":
     # Create a themed window with the desired theme name
-    window = ThemedTk(theme="arc")
+    window = tk.Tk()
     # Create a style object
-    style = ttk.Style(window)
 
 
     app = VideoManager(window)
-    app.pack()
     window.mainloop()

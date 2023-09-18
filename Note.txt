@@ -40,7 +40,7 @@
 - lsitbox can display thumbnail of the video
 - search function update search for unrated video(if need)
 - update function cannot not get video data yet
-- play video feature cannot hear sound, cannot turn it off(should be able to forwrd and backward) --> need pause, forward and backward
+- play video feature cannot hear sound, cannot turn it off(should be able to forwrd and backward) --> need pause, forward and backward, and turn off
 
 
 
