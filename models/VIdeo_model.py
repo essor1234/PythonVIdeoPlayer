@@ -19,6 +19,7 @@ class Video:
         self.path = path
         self.rate = 0
         self.plays = 0
+
     @classmethod
     def get_video_data(self):
         df = pd.read_csv(self.video_relative_path)
@@ -31,6 +32,7 @@ class Video:
             path = row["path"]
             video = Video(id=id, title=title, director=director, path=path)
             all_videos.append(video)
+
         return all_videos
 
     @classmethod

@@ -4,10 +4,15 @@ class VideoController:
     data = Video.get_video_data()
 
     def list_video(self):
-      video_list = []
-      for video in self.data:
-        video_list.append(self.data_list_return(video))
-      return video_list
+        video_list = []
+        for video in self.data:
+            video_data = self.data_list_return(video)
+            # update the rate from data
+            video_data[3] = video.get_rate()
+            # append it
+            video_list.append(video_data)
+        return video_list
+
 
     def data_list_return(self, video):
         return [video.id, video.title, video.director, video.rate]
@@ -26,6 +31,7 @@ class VideoController:
             for video in self.data:
                 if int(video_search) == video.rate:
                     video_list.append(self.data_list_return(video))
+
 
         elif mode == "title":
             for video in self.data:

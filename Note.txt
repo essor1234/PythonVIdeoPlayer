@@ -50,4 +50,9 @@
 ----- youtube
 - cannot add data into csv file  -->fixed
 - need pop up window when dowloading and when dowload finish
+-  CANNOT DISPLAY NEW DATA -> NEED THREAD
+- CANNOT ADD MULTIPL VIDEO AT A TIME ->
+- CANNOT UPDATE ->
+- NEED TO DISPLAY VIDEO details ON THE THE SCREEN-> need display image(thumbnail of the video)
+- when dowload or choose a video, need to move the video into a stored
 

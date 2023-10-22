@@ -94,8 +94,8 @@ class VideoManager(tk.Frame):
         self.search_combobox.grid(row=0, column=2)
 
         # Create a button to check a video
-        btn_check_video = ttk.Button(self.search_frame, text="Search", compound="left",
-                                     command=lambda: self.search_video(self.search_combobox.get()))
+        btn_check_video = ttk.Button(self.search_frame, text="REFRESH", compound="left",
+                                     command=lambda: self.refresh())
         btn_check_video.config(width=15)
         btn_check_video.grid(row=0, column=3)
 
@@ -106,10 +106,17 @@ class VideoManager(tk.Frame):
 
 
         self.list_all()
+        self.main_display.bind('<Double-Button-1>', self.check_video)
+        self.search_entry.bind('<Return>', self.search_video)
+
+    def refresh(self):
+        self.main_display.delete(*self.main_display.get_children())
+        self.list_all()
+        self.listbox.delete(0, tk.END)
     def list_all(self):
         for video in video_controller.list_video():
             self.main_display.insert("", "end", values=(video[0], video[1], video[2], "*" * int(video[3])))
-    def check_video(self):
+    def check_video(self, event):
         # get video_id from treeview (in a tuple)
         video_ids = self.main_display.selection()
         # clear list box
@@ -230,8 +237,9 @@ class VideoManager(tk.Frame):
 
 
 
-    def search_video(self, selected_mode):
+    def search_video(self, event):
         search_value = self.search_entry.get()
+        selected_mode = self.search_combobox.get()
         # clear treview
         self.main_display.delete(*self.main_display.get_children())
         if not search_value:
@@ -248,41 +256,6 @@ class VideoManager(tk.Frame):
             return "False"
         except IndexError:
             return "False"
-
-        # choose mode part
-        '''if selected_mode == "Title":
-            try:
-                for video in video_controller.find_video_by_title(search_value):
-                    self.main_display.insert("", "end", values=(video[0], video[1], video[2], "*" * int(video[3])))
-            except TypeError:
-                """ return warning later"""
-                return False
-
-        elif selected_mode == "Director":
-            try:
-                for video in video_controller.find_video_by_director(search_value):
-                    self.main_display.insert("", "end", values=(video[0], video[1], video[2], "*" * int(video[3])))
-            except TypeError:
-                """ return warning later"""
-                return False
-
-        elif selected_mode == "Id":
-            try:
-                for video in video_controller.find_video_by_id(int(search_value)):
-                    self.main_display.insert("", "end", values=(video[0], video[1], video[2], "*" * int(video[3])))
-            except ValueError:
-                return False
-            except IndexError:
-                return False
-
-        elif selected_mode == "Rate":
-            try:
-                for video in video_controller.find_video_by_rate(int(search_value)):
-                    self.main_display.insert("", "end", values=(video[0], video[1], video[2], "*" * int(video[3])))
-            except ValueError:
-                return False
-            except IndexError:
-                return False'''
 
     # use for prevent multiple instances
     def close_top(self, top_window):
