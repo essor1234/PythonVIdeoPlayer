@@ -7,11 +7,7 @@ import sys
 import socket
 from controller.video_controller import video_controller
 from models.VIdeo_model import Video
-<<<<<<< HEAD
-#from models.Player_model import Player
-=======
-from models.Player_model import Player
->>>>>>> origin/master
+
 
 from UI.add_video import AddVideo
 from UI.update_video import UpdateVideo
@@ -105,7 +101,7 @@ class VideoManager(tk.Frame):
 
         """Play button"""
         self.play_btn = ttk.Button(self.listbox_frame, text="PLay", width=70,
-                                   command=self.play_video)
+                                   command=None)
         self.play_btn.grid(row=3, column=0, padx=10, pady=10)
 
 
@@ -222,14 +218,14 @@ class VideoManager(tk.Frame):
         # play video chosen
         # Create a Qt Application
 
-    def play_video(self):
+    '''def play_video(self):
         video_path, video_id = self.return_video_path()
         app = QtWidgets.QApplication(sys.argv)
         player = Player(video_path)
         Video.increase_play(video_id)
         player.show()
         player.resize(640, 480)
-        sys.exit(app.exec_())
+        sys.exit(app.exec_())'''
 
 
 
@@ -242,8 +238,19 @@ class VideoManager(tk.Frame):
             """ return warning later"""
             return False
 
+        try:
+            for video in video_controller.find_video(search_value, selected_mode):
+                self.main_display.insert("", "end", values=(video[0], video[1], video[2], "*" * int(video[3])))
+        except TypeError:
+            """ return warning later"""
+            return "False"
+        except ValueError:
+            return "False"
+        except IndexError:
+            return "False"
+
         # choose mode part
-        if selected_mode == "Title":
+        '''if selected_mode == "Title":
             try:
                 for video in video_controller.find_video_by_title(search_value):
                     self.main_display.insert("", "end", values=(video[0], video[1], video[2], "*" * int(video[3])))
@@ -275,7 +282,7 @@ class VideoManager(tk.Frame):
             except ValueError:
                 return False
             except IndexError:
-                return False
+                return False'''
 
     # use for prevent multiple instances
     def close_top(self, top_window):

@@ -6,63 +6,43 @@ class VideoController:
     def list_video(self):
       video_list = []
       for video in self.data:
-        id = video.id
-        title = video.title
-        director = video.director
-        rate = video.get_rate()
-        video_list.append([id, title, director, rate])
+        video_list.append(self.data_list_return(video))
       return video_list
 
-    def find_video_by_id(self, video_id):
-        """can cause rate = 0"""
+    def data_list_return(self, video):
+        return [video.id, video.title, video.director, video.rate]
+
+    def find_video(self, video_search, mode):
+
+        mode = mode.lower()
         video_list = []
-        for video in self.data:
-          if video_id == video.id:
-            video_list.append([video.id, video.title, video.director, video.rate])
-        # check if there is video in video_list
+        # check search type
+        if mode == "id":
+            for video in self.data:
+                if int(video_search) == video.id:
+                    video_list.append(self.data_list_return(video))
+
+        elif mode == "rate":
+            for video in self.data:
+                if int(video_search) == video.rate:
+                    video_list.append(self.data_list_return(video))
+
+        elif mode == "title":
+            for video in self.data:
+                if video_search.lower().replace(" ", "") in video.title.lower().replace(" ", ""):
+                    video_list.append(self.data_list_return(video))
+        elif mode == "director":
+            for video in self.data:
+                if video_search.lower().replace(" ", "") in video.director.lower().replace(" ", ""):
+                    video_list.append(self.data_list_return(video))
+        else:
+            return "None"
+
+        # check if have video in video_list
         if not video_list:
-          return False
+            return "None"
 
         return video_list
-
-
-
-
-    def find_video_by_title(self, video_title):
-      """can cause rate = 0"""
-      video_list = []
-      for video in self.data:
-        if video_title.lower().replace(" ", "") == video.title.lower().replace(" ", ""):
-          video_list.append([video.id, video.title, video.director, video.rate])
-      if not video_list:
-        return False
-
-      return video_list
-
-
-    def find_video_by_director(self, video_director):
-      """can cause rate = 0"""
-      video_list = []
-      for video in self.data:
-        if video_director.lower().replace(" ", "") == video.director.lower().replace(" ", ""):
-          video_list.append([video.id, video.title, video.director, video.rate])
-      # check if there is video in video_list
-      if not video_list:
-        return False
-
-      return video_list
-
-    def find_video_by_rate(self, video_rate):
-      """can cause rate = 0"""
-      video_list = []
-      for video in self.data:
-        if video_rate == video.rate:
-          video_list.append([video.id, video.title, video.director, video.rate])
-      # check if there is video in video_list
-      if not video_list:
-        return False
-
-      return video_list
 
     """check video"""
     def check_video(self, video_id):
