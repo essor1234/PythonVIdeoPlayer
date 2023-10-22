@@ -7,7 +7,11 @@ import sys
 import socket
 from controller.video_controller import video_controller
 from models.VIdeo_model import Video
+<<<<<<< HEAD
 #from models.Player_model import Player
+=======
+from models.Player_model import Player
+>>>>>>> origin/master
 
 from UI.add_video import AddVideo
 from UI.update_video import UpdateVideo
