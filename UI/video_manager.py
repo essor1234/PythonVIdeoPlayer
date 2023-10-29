@@ -109,10 +109,17 @@ class VideoManager(tk.Frame):
         self.main_display.bind('<Double-Button-1>', self.check_video)
         self.search_entry.bind('<Return>', self.search_video)
 
+    def populate_listbox(self, listbox):
+        listbox.delete(0, tk.END)
+        for video in video_controller.data:
+            listbox.insert(tk.END, video.title)
+
     def refresh(self):
         self.main_display.delete(*self.main_display.get_children())
         self.list_all()
         self.listbox.delete(0, tk.END)
+        video_controller.refresh_data()
+
     def list_all(self):
         for video in video_controller.list_video():
             self.main_display.insert("", "end", values=(video[0], video[1], video[2], "*" * int(video[3])))
@@ -169,6 +176,8 @@ class VideoManager(tk.Frame):
     def update_video(self):
         self.info_for_chosen_video()
         self.update_video_window_display()
+        self.main_display.selection_remove(self.main_display.selection()[0])
+        self.top_open=False
 
     def add_video(self):
         # Access the global flag variable

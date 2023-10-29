@@ -78,7 +78,7 @@ class Video:
             df.loc[index, "director"] = video_director
             df.loc[index, "path"] = video_path
             df.loc[index, "rate"] = video_rate
-            df.loc[index, "plays"] = video_plays
+            df.loc[index, "plays"] = int(video_plays)
 
             df.to_csv(self.video_relative_path, index=False)
             return True

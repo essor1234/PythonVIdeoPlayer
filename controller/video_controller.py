@@ -3,6 +3,11 @@ from models.VIdeo_model import Video
 class VideoController:
     data = Video.get_video_data()
 
+    def refresh_data(self):
+        self.data = Video.get_video_data()
+
+
+
     def list_video(self):
         video_list = []
         for video in self.data:
@@ -52,11 +57,14 @@ class VideoController:
 
     """check video"""
     def check_video(self, video_id):
-      for video in self.data:
-        if video_id == video.id:
-          return video.title, video.director, video.rate, video.plays, video.path
+        for video in self.data:
+            if video_id == video.id:
+                vid = Video(video.id, video.title, video.director, video.path)
+                video.plays = vid.get_plays()
+                video.rate = vid.get_rate()
+                return video.title, video.director, video.rate, video.plays, video.path
 
-      return False
+        return False
 
 
 video_controller = VideoController()

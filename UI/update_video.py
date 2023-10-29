@@ -110,6 +110,7 @@ class UpdateVideo(tk.Frame, Video):
         else:
             Video.update_video(video_id, current_title, current_director, current_path, current_rate, current_play)
             self.root.destroy()
+            self.update_video.refresh()
 
 
 
