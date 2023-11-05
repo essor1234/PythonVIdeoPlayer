@@ -39,9 +39,12 @@
 -----VIdeoManager
 - lsitbox can display thumbnail of the video
 - search function update search for unrated video(if need)
-- update function cannot not get video data yet
+- update function cannot not get video data yet->fixed
 - play video feature cannot hear sound, cannot turn it off(should be able to forwrd and backward) --> need pause, forward and backward, and turn off
-
+ - CANNOT DISPLAY NEW DATA -> fixed
+- CANNOT ADD MULTIPL VIDEO AT A TIME -> fixed
+- CANNOT UPDATE many time-> fixed
+- NEED TO DISPLAY VIDEO details ON THE THE SCREEN-> need display image(thumbnail of the video)[after can dowload video]
 
 
 ----my comp
@@ -50,9 +53,6 @@
 ----- youtube
 - cannot add data into csv file  -->fixed
 - need pop up window when dowloading and when dowload finish
--  CANNOT DISPLAY NEW DATA -> fixed
-- CANNOT ADD MULTIPL VIDEO AT A TIME ->
-- CANNOT UPDATE many time->
-- NEED TO DISPLAY VIDEO details ON THE THE SCREEN-> need display image(thumbnail of the video)[after can dowload video]
-- when dowload or choose a video, need to move the video into a stored
+- 
+- when dowload or choose a video, need to move the video into a stored-> fixed
 

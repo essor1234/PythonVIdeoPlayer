@@ -190,13 +190,20 @@ class Video:
 
     def get_rate(self):
         df = pd.read_csv(self.video_relative_path)
-        rate = df.loc[df.id == self.id, "rate"].values[0]
+        try:
+            rate = df.loc[df.id == self.id, "rate"].values[0]
+        except IndexError:
+            return 0
+        if not rate:
+            rate = 0  # set default
         self.rate = rate
         return self.rate
 
     def get_plays(self):
         df = pd.read_csv(self.video_relative_path)
         plays = df.loc[df.id == self.id, "plays"].values[0]
+        if not plays:
+            plays = 0
         self.plays = plays
         return self.plays
 
