@@ -5,8 +5,14 @@ from ttkthemes import ThemedTk
 from PyQt5 import QtWidgets
 import sys
 import socket
+from threading import Timer, Thread, Event
+import vlc
+import platform
+import os
+
 from controller.video_controller import video_controller
 from models.VIdeo_model import Video
+from models.player_model import Player
 
 
 from UI.add_video import AddVideo
@@ -101,7 +107,7 @@ class VideoManager(tk.Frame):
 
         """Play button"""
         self.play_btn = ttk.Button(self.listbox_frame, text="PLay", width=70,
-                                   command=None)
+                                   command=self.play_video)
         self.play_btn.grid(row=3, column=0, padx=10, pady=10)
 
 
@@ -234,15 +240,22 @@ class VideoManager(tk.Frame):
         # play video chosen
         # Create a Qt Application
 
-    '''def play_video(self):
+    def play_video(self):
         video_path, video_id = self.return_video_path()
-        app = QtWidgets.QApplication(sys.argv)
-        player = Player(video_path)
-        Video.increase_play(video_id)
-        player.show()
-        player.resize(640, 480)
-        sys.exit(app.exec_())'''
+        print(f"Video path: {video_path} \nVideo id: {video_id}")
 
+        new_window = tk.Toplevel(self)
+        frame = Player(new_window, video_path, title="tkinter vlc")
+
+        def close_window_and_stop_player():
+            frame.stop()
+            new_window.destroy()
+
+        new_window.protocol("WM_DELETE_WINDOW", close_window_and_stop_player)
+        new_window.mainloop()
+
+    def _quit(self):
+        self.destroy()
 
 
 

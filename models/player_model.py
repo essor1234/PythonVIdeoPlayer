@@ -83,10 +83,14 @@ class Player(Tk.Frame):
     """The main window has to deal with events.
     """
 
-    def __init__(self, parent, title=None):
+    def __init__(self, parent, fullname, title=None):
         Tk.Frame.__init__(self, parent)
 
         self.parent = parent
+        self.fullname = fullname
+        self.running = True
+        self.after_id = None
+
 
         if title == None:
             title = "tk_vlc"
@@ -158,12 +162,9 @@ class Player(Tk.Frame):
         """
         # if a file is already running, then stop it.
         self.OnStop()
-
+        fullname = self.fullname
         # Create a file dialog opened in the current home directory, where
         # you can display all kind of files, having as title "Choose a file".
-        p = pathlib.Path(os.path.expanduser("~"))
-        fullname = askopenfilename(initialdir=p, title="choose your file",
-                                   filetypes=(("all files", "*.*"), ("mp4 files", "*.mp4")))
         if os.path.isfile(fullname):
             print(fullname)
             splt = os.path.split(fullname)
@@ -224,24 +225,33 @@ class Player(Tk.Frame):
     def OnTimer(self):
         """Update the time slider according to the current movie time.
         """
-        if self.player == None:
-            return
-        # since the self.player.get_length can change while playing,
-        # re-set the timeslider to the correct range.
-        length = self.player.get_length()
-        dbl = length * 0.001
-        self.timeslider.config(to=dbl)
+        if self.running:
+            if self.player == None:
+                return
+            # since the self.player.get_length can change while playing,
+            # re-set the timeslider to the correct range.
+            length = self.player.get_length()
+            dbl = length * 0.001
+            self.timeslider.config(to=dbl)
 
-        # update the time on the slider
-        tyme = self.player.get_time()
-        if tyme == -1:
-            tyme = 0
-        dbl = tyme * 0.001
-        self.timeslider_last_val = ("%.0f" % dbl) + ".0"
-        # don't want to programatically change slider while user is messing with it.
-        # wait 2 seconds after user lets go of slider
-        if time.time() > (self.timeslider_last_update + 2.0):
-            self.timeslider.set(dbl)
+            # update the time on the slider
+            tyme = self.player.get_time()
+            if tyme == -1:
+                tyme = 0
+            dbl = tyme * 0.001
+            self.timeslider_last_val = ("%.0f" % dbl) + ".0"
+            # don't want to programatically change slider while user is messing with it.
+            # wait 2 seconds after user lets go of slider
+            if time.time() > (self.timeslider_last_update + 2.0):
+                self.timeslider.set(dbl)
+                self.after_id = self.after(1000, self.OnTimer)
+
+    def stop(self):
+        self.running = False
+        if self.player:
+            self.player.stop()
+        if self.after_id:
+            self.after_cancel(self.after_id)
 
     def scale_sel(self, evt):
         if self.player == None:
@@ -304,6 +314,9 @@ class Player(Tk.Frame):
         """Display a simple error dialog.
         """
         edialog = Tk.tkMessageBox.showerror(self, 'Error', errormessage)
+
+    def Close(self):
+        pass
 
 
 def Tk_get_root():
