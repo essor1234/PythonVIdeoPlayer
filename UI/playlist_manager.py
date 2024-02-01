@@ -3,6 +3,13 @@ import tkinter.ttk as ttk
 import tkinter.font as tkfont
 from ttkthemes import ThemedTk
 
+from models.Playlist_model import Playlist
+from controller.playlist_controller import PlaylistController
+
+
+from UI.create_playlist import CreatePlaylist
+from UI.update_playlist import UpdatePlaylist
+
 class PlaylistManager(tk.Frame):
     columns = ["Id", "Title", "Length"]
     def __init__(self, parent, controller):
@@ -13,6 +20,7 @@ class PlaylistManager(tk.Frame):
         # window display
         self.root = self.parent
         self.root.title("Playlist Manager")
+        self.top_open = False
 
         """Search function"""
         # Create a frame for the search bar
@@ -60,7 +68,7 @@ class PlaylistManager(tk.Frame):
         self.function_btn_frame.grid(row=0, column=0, padx=5, pady=5, sticky="W")
         # add button
         self.add_btn = ttk.Button(self.function_btn_frame, text="Create Playlist", compound="left",
-                                  command=None)
+                                  command= self.create_window)
         self.add_btn.grid(row=0, column=0, ipady=20, ipadx=20)
         # update button
         self.update_btn = ttk.Button(self.function_btn_frame, text="Update Playlist", compound="left",
@@ -92,6 +100,27 @@ class PlaylistManager(tk.Frame):
         self.play_btn = ttk.Button(self.listbox_frame, text="PLay", width=70)
         self.play_btn.grid(row=3, column=0, padx=10, pady=10)
 
+    def create_window(self):
+        if not self.top_open:
+            self.top_open = True
+            # Create a Toplevel widget
+            new_window = tk.Toplevel(self)
+            frame = CreatePlaylist(new_window)
+            frame.pack()
+            new_window.protocol("WM_DELETE_WINDOW", lambda: self.close_top(new_window))
+
+    def update_window(self):
+        pass
+
+    def close_top(self, top_window):
+        self.top_open = False
+        # Destroy the Toplevel window
+        top_window.destroy()
+
+
+
+
+
 
 if __name__ == "__main__":
     # Create a themed window with the desired theme name
@@ -101,5 +130,5 @@ if __name__ == "__main__":
 
 
     app = PlaylistManager(window, None)
-    app.pack()
+    app.grid()
     window.mainloop()

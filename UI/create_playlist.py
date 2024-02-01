@@ -2,6 +2,11 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from ttkthemes import ThemedTk
 
+from controller.video_controller import video_controller
+from models.VIdeo_model import Video
+from models.Playlist_model import Playlist
+
+
 class CreatePlaylist(tk.Frame):
     columns_video = ["Id", "Title", "Director", "Rate"]
 
@@ -114,13 +119,13 @@ class CreatePlaylist(tk.Frame):
         """BUTTONS"""
         # Create add button
         self.add_btn = ttk.Button(main_display_frame, text="Add Video", compound="left",
-                                  command=None)
+                                  command= self.add_video)
         # Change column and row parameters to place it between two Treeviews
         self.add_btn.grid(row=1, column=2, sticky="n", padx=10)
 
         # Create delete button
         self.del_btn = ttk.Button(main_display_frame, text="Remove Video", compound="left",
-                                  command=None)
+                                  command= self.remove_video)
         # Change column and row parameters to place it between two Treeviews
         self.del_btn.grid(row=1, column=2, sticky="s", padx=10)
 
@@ -129,6 +134,74 @@ class CreatePlaylist(tk.Frame):
         # Create create button
         self.create_btn = ttk.Button(self.root, text="Create", compound="left", command=None)
         self.create_btn.pack(side="right", padx=10, pady=10)
+
+        """Display videos"""
+        self.display_video()
+    def display_video(self):
+        # Remove all videos on the display
+        for i in self.all_videos.get_children():
+            self.all_videos.delete(i)
+        for video in video_controller.list_video():
+            self.all_videos.insert("", "end", values=
+                                (video[0], video[1], video[2], "*" * video[3]))
+
+    def add_video(self):
+        try:
+            # Get the selected item ID from the source treeview
+            selected_item = self.all_videos.selection()[0]
+        except IndexError:
+            return None
+        # Get the values of the selected item
+        values = self.all_videos.item(selected_item)["values"]
+        # Get the video ID from the first value
+        video_id = int(values[0])
+        video_title, video_director, video_rate, rate, path = video_controller.check_video(video_id)
+        # Insert the values into the destination treeview
+        self.video_added.insert("", "end", values=(video_id, video_title, video_director, "*" * video_rate))
+        # Delete the selected item from the source treeview
+        self.all_videos.delete(selected_item)
+
+    def remove_video(self):
+        try:
+            # Get the selected item ID from the source treeview
+            selected_item = self.video_added.selection()[0]
+        except IndexError:
+            return None
+        # Get the values of the selected item
+        values = self.video_added.item(selected_item)["values"]
+        # Get the video ID from the first value
+        video_id = int(values[0])
+        video_title, video_director, video_rate, rate, path = video_controller.check_video(video_id)
+        # Insert the values into the destination treeview
+        self.all_videos.insert("", "end", values=(video_id, video_title, video_director, "*" * video_rate))
+        # Delete the selected item from the source treeview
+        self.video_added.delete(selected_item)
+
+    """TODO: Need to find a solution to use playlist_model file."""
+    def create_func(self):
+        video_list = []
+        list_name = self.get_name.get()
+
+        for line in self.video_added.get_children():
+            video = self.video_added.item(line)["values"]
+            video_list.append(str(video[0]))
+
+        video_list = ", ".join(video_list)
+
+        if not list_name:
+            self.get_name.config(highlightbackground="red", highlightcolor="red")
+            if not self.warning_shown:
+                warning_label = tk.Label(self.name_frame, text="Name is required!", fg="red")
+                warning_label.pack()
+                self.warning_shown = True
+            # change the color of the entry widget
+        else:
+            # do something with list_name and video_list
+            playlist_model = Playlist(list_name, video_list)
+            playlist_model.create_list(list_name, video_list)
+            # destroy the window
+            self.root.destroy()
+
 if __name__ == "__main__":
     # Create a themed window with the desired theme name
     window = ThemedTk(theme="arc")

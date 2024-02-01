@@ -1,14 +1,7 @@
 import tkinter as tk
 import tkinter.ttk as ttk
 import tkinter.font as tkfont
-from ttkthemes import ThemedTk
-from PyQt5 import QtWidgets
-import sys
-import socket
-from threading import Timer, Thread, Event
-import vlc
-import platform
-import os
+
 
 from controller.video_controller import video_controller
 from models.VIdeo_model import Video
@@ -254,8 +247,6 @@ class VideoManager(tk.Frame):
         new_window.protocol("WM_DELETE_WINDOW", close_window_and_stop_player)
         new_window.mainloop()
 
-    def _quit(self):
-        self.destroy()
 
 
 
