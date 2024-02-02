@@ -132,7 +132,7 @@ class CreatePlaylist(tk.Frame):
 
 
         # Create create button
-        self.create_btn = ttk.Button(self.root, text="Create", compound="left", command=None)
+        self.create_btn = ttk.Button(self.root, text="Create", compound="left", command= self.create_func)
         self.create_btn.pack(side="right", padx=10, pady=10)
 
         """Display videos"""

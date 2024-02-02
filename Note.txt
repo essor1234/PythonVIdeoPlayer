@@ -56,3 +56,10 @@
 - 
 - when dowload or choose a video, need to move the video into a stored-> fixed
 
+-----Playlist Manager------
+
+---Create Playlist----
+- need make search function work
+---Update Playlist----
+Not Start yet...
+

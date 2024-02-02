@@ -28,7 +28,8 @@ class Playlist:
         df = pd.read_csv(self.playlist_relative_path, header=0)
         length = len(video_ids.split(", "))
         # generate a new id by incrementing the maximum id in the file
-        new_id = df.id.max() + 1
+        new_id = df.id.max() + 1 if df.id.max() >= 0 else 1
+        self.id = new_id  # assign the new id to the Playlist object
         # create a new row with the given parameters
         new_row = [new_id, list_title, video_ids, length]
         # append the new row to the end of the dataframe
