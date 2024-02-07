@@ -68,7 +68,7 @@ class PlaylistManager(tk.Frame):
         self.function_btn_frame.grid(row=0, column=0, padx=5, pady=5, sticky="W")
         # add button
         self.add_btn = ttk.Button(self.function_btn_frame, text="Create Playlist", compound="left",
-                                  command= self.create_window)
+                                  command=lambda: self.create_window())
         self.add_btn.grid(row=0, column=0, ipady=20, ipadx=20)
         # update button
         self.update_btn = ttk.Button(self.function_btn_frame, text="Update Playlist", compound="left",
@@ -101,25 +101,23 @@ class PlaylistManager(tk.Frame):
         self.play_btn.grid(row=3, column=0, padx=10, pady=10)
 
     def create_window(self):
+        print(self.top_open)
         if not self.top_open:
             self.top_open = True
-            # Create a Toplevel widget
             new_window = tk.Toplevel(self)
-            frame = CreatePlaylist(new_window)
+            frame = CreatePlaylist(new_window, self)
             frame.pack()
             new_window.protocol("WM_DELETE_WINDOW", lambda: self.close_top(new_window))
 
     def update_window(self):
         pass
 
-    def close_top(self, top_window):
+    def close_top(self, window):
         self.top_open = False
-        # Destroy the Toplevel window
-        top_window.destroy()
+        window.destroy()
 
-
-
-
+    def set_top_open_false(self):
+        self.top_open = False
 
 
 if __name__ == "__main__":

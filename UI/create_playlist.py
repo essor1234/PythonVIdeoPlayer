@@ -10,7 +10,7 @@ from models.Playlist_model import Playlist
 class CreatePlaylist(tk.Frame):
     columns_video = ["Id", "Title", "Director", "Rate"]
 
-    def __init__(self, parent):
+    def __init__(self, parent, playlist_manager):
         tk.Frame.__init__(self, parent)
 
         self.parent = parent
@@ -18,6 +18,7 @@ class CreatePlaylist(tk.Frame):
         # window display
         self.root = self.parent
         self.root.title("Create Playlist")
+        self.playlist_manager = playlist_manager
 
         """Search function"""
         self.search_frame = ttk.Frame(self.root)
@@ -43,10 +44,12 @@ class CreatePlaylist(tk.Frame):
         self.search_combobox.grid(row=0, column=2, padx=5, pady=5)
 
         # Create a button to check a video
-        btn_check_video = ttk.Button(self.search_frame, text="Search", compound="left",
-                                     command=None)
+        btn_check_video = ttk.Button(self.search_frame, text="REFRESH", compound="left",
+                                     command= self.refresh)
         btn_check_video.config(width=15)
         btn_check_video.grid(row=0, column=3, padx=5, pady=5)
+        self.search_entry.bind('<Return>', self.search_video)
+
 
 
         # Create get name frame
@@ -137,6 +140,8 @@ class CreatePlaylist(tk.Frame):
 
         """Display videos"""
         self.display_video()
+
+
     def display_video(self):
         # Remove all videos on the display
         for i in self.all_videos.get_children():
@@ -201,12 +206,43 @@ class CreatePlaylist(tk.Frame):
             playlist_model.create_list(list_name, video_list)
             # destroy the window
             self.root.destroy()
+            self.playlist_manager.set_top_open_false()
 
-if __name__ == "__main__":
-    # Create a themed window with the desired theme name
-    window = ThemedTk(theme="arc")
-    # Create a style object
-    style = ttk.Style(window)
+    def search_video(self, event):
+        search_value = self.search_entry.get()
+        selected_mode = self.search_combobox.get()
+        # clear treeview
+        self.all_videos.delete(*self.all_videos.get_children())
+        if not search_value:
+            """ return warning later"""
+            return False
 
-    app = CreatePlaylist(window)
-    window.mainloop()
+        try:
+            for video in video_controller.find_video(search_value, selected_mode):
+                self.all_videos.insert("", "end", values=(video[0], video[1], video[2], "*" * int(video[3])))
+        except TypeError:
+            """ return warning later"""
+            return "False"
+        except ValueError:
+            return "False"
+        except IndexError:
+            return "False"
+
+    def refresh(self):
+        """
+        Optional: Might need to fix problem for appear added video after refresh
+        :return:
+        """
+        self.all_videos.delete(*self.all_videos.get_children())
+        self.display_video()
+        # self.listbox.delete(0, tk.END)
+        video_controller.refresh_data()
+
+# if __name__ == "__main__":
+#     # Create a themed window with the desired theme name
+#     window = ThemedTk(theme="arc")
+#     # Create a style object
+#     style = ttk.Style(window)
+#
+#     app = CreatePlaylist(window)
+#     window.mainloop()
