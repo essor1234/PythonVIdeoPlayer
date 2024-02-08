@@ -72,7 +72,7 @@ class PlaylistManager(tk.Frame):
         self.add_btn.grid(row=0, column=0, ipady=20, ipadx=20)
         # update button
         self.update_btn = ttk.Button(self.function_btn_frame, text="Update Playlist", compound="left",
-                                  command=  self.info_for_chosen_list)
+                                  command=  self.combine)
         self.update_btn.grid(row=1, column=0, ipady=5, ipadx=5, padx=10, pady=10)
         # delete button
         self.delete_btn = ttk.Button(self.function_btn_frame, text="Delete Playlist", compound="left",
@@ -110,7 +110,12 @@ class PlaylistManager(tk.Frame):
             new_window.protocol("WM_DELETE_WINDOW", lambda: self.close_top(new_window))
 
     def update_window(self):
-        pass
+        if not self.top_open:
+            self.top_open = True
+            new_window = tk.Toplevel(self)
+            frame = UpdatePlaylist(new_window, self)
+            frame.pack()
+            new_window.protocol("WM_DELETE_WINDOW", lambda: self.close_top(new_window))
 
     def close_top(self, window):
         self.top_open = False
@@ -132,7 +137,6 @@ class PlaylistManager(tk.Frame):
             except ValueError:
                 list_id = -1
                 list_title = "None"
-            print(list_id)
             return list_id, list_title
         except IndexError:
             warning_label = tk.Label(self.search_frame, text="PLease choose a list to optimize", fg="red")

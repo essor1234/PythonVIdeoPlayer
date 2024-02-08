@@ -5,10 +5,13 @@ from ttkthemes import ThemedTk
 from controller.video_controller import video_controller
 from models.VIdeo_model import Video
 from models.Playlist_model import Playlist
+from controller.playlist_controller import playList_controller
+
+
 class UpdatePlaylist(tk.Frame):
     columns_video = ["Id", "Title", "Director", "Rate"]
 
-    def __init__(self, parent):
+    def __init__(self, parent, playlist_manager):
         tk.Frame.__init__(self, parent)
 
         self.parent = parent
@@ -16,6 +19,8 @@ class UpdatePlaylist(tk.Frame):
         # window display
         self.root = self.parent
         self.root.title("Update Playlist")
+        self.playlist_manager = playlist_manager
+
 
         """Search function"""
         self.search_frame = ttk.Frame(self.root)
@@ -117,13 +122,13 @@ class UpdatePlaylist(tk.Frame):
         """BUTTONS"""
         # Create add button
         self.add_btn = ttk.Button(main_display_frame, text="Add Video", compound="left",
-                                  command=None)
+                                  command= self.add_video)
         # Change column and row parameters to place it between two Treeviews
         self.add_btn.grid(row=1, column=2, sticky="n", padx=10)
 
         # Create delete button
         self.del_btn = ttk.Button(main_display_frame, text="Remove Video", compound="left",
-                                  command=None)
+                                  command= self.remove_video)
         # Change column and row parameters to place it between two Treeviews
         self.del_btn.grid(row=1, column=2, sticky="s", padx=10)
 
@@ -133,13 +138,16 @@ class UpdatePlaylist(tk.Frame):
         self.create_btn = ttk.Button(self.root, text="Save", compound="left", command=None)
         self.create_btn.pack(side="right", padx=10, pady=10)
 
-    def display_video(self):
-        # Remove all videos on the display
-        for i in self.all_videos.get_children():
-            self.all_videos.delete(i)
-        for video in video_controller.list_video():
-            self.all_videos.insert("", "end", values=
-            (video[0], video[1], video[2], "*" * video[3]))
+        self.display_video()
+        self.video_in_list_display()
+
+    # def display_video(self):
+    #     # Remove all videos on the display
+    #     for i in self.all_videos.get_children():
+    #         self.all_videos.delete(i)
+    #     for video in video_controller.list_video():
+    #         self.all_videos.insert("", "end", values=
+    #         (video[0], video[1], video[2], "*" * video[3]))
 
     def add_video(self):
         try:
@@ -172,11 +180,46 @@ class UpdatePlaylist(tk.Frame):
         self.all_videos.insert("", "end", values=(video_id, video_title, video_director, "*" * video_rate))
         # Delete the selected item from the source treeview
         self.video_added.delete(selected_item)
-if __name__ == "__main__":
-    # Create a themed window with the desired theme name
-    window = ThemedTk(theme="arc")
-    # Create a style object
-    style = ttk.Style(window)
 
-    app = UpdatePlaylist(window)
-    window.mainloop()
+    def display_video(self):
+        # Remove every children from the display
+        for i in self.all_videos.get_children():  # return a list of child of objects on main_display
+            self.all_videos.delete(i)  # remove that list from the display
+
+        list_id, list_title = self.playlist_manager.info_for_chosen_list()
+
+        list_video_ids = set()
+        try:
+            for current_video in playList_controller.display_video_in_list(list_id):
+                current_video_id = current_video[0]
+                list_video_ids.add(current_video_id)
+
+                # For each data, add a new row to the display
+            for video in video_controller.list_video():  # For each video
+                video_id = video[0]
+                if video_id not in list_video_ids:
+                    self.all_videos.insert("", "end", values=(video[0], video[1], video[2], "*" * video[3]))
+        # video lsit have None video, display all videos
+        except TypeError:
+            print("not work")
+
+    def video_in_list_display(self):
+        list_id, list_title = self.playlist_manager.info_for_chosen_list()
+        try:
+            for video in playList_controller.display_video_in_list(list_id):
+                self.video_added.insert("", "end", values=(video[0], video[1], video[2], "*" * video[3]))
+            # self.get_current_name.insert(0, list_title)
+        except TypeError:
+            self.video_added.insert("", "end", values=("", "", "", ""))
+            # self.get_current_name.insert(0, list_title)
+
+
+
+# if __name__ == "__main__":
+#     # Create a themed window with the desired theme name
+#     window = ThemedTk(theme="arc")
+#     # Create a style object
+#     style = ttk.Style(window)
+#
+#     app = UpdatePlaylist(window)
+#     window.mainloop()

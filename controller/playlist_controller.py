@@ -38,6 +38,7 @@ class PlaylistController:
             return False
 
         return playlist_list
+
     def display_video_in_list(self, list_id):
         video_list = []
         for playlist in self.data:
@@ -45,7 +46,7 @@ class PlaylistController:
                 video_ids = [int(id) for id in str(playlist.get_video_ids()).split(", ")]
                 for id_video in video_ids:
                     for video in self.video_data:
-                        if id_video == video:
+                        if id_video == video.id:  # Compare id_video with video.id
                             video_list.append([video.id, video.title, video.director, video.rate])
 
         return video_list

@@ -57,9 +57,14 @@
 - when dowload or choose a video, need to move the video into a stored-> fixed
 
 -----Playlist Manager------
+- search func need to implement
+- double click into the list to dshow all videos(with thumbnail)
+- implement delete function
 
 ---Create Playlist----
 - need make search function work
----Update Playlist----
-Not Start yet...
 
+---Update Playlist----
+- Need to get the current playlist name
+- search function need to implement
+- save func need to implement
