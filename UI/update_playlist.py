@@ -2,6 +2,9 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from ttkthemes import ThemedTk
 
+from controller.video_controller import video_controller
+from models.VIdeo_model import Video
+from models.Playlist_model import Playlist
 class UpdatePlaylist(tk.Frame):
     columns_video = ["Id", "Title", "Director", "Rate"]
 
@@ -129,6 +132,46 @@ class UpdatePlaylist(tk.Frame):
         # Create create button
         self.create_btn = ttk.Button(self.root, text="Save", compound="left", command=None)
         self.create_btn.pack(side="right", padx=10, pady=10)
+
+    def display_video(self):
+        # Remove all videos on the display
+        for i in self.all_videos.get_children():
+            self.all_videos.delete(i)
+        for video in video_controller.list_video():
+            self.all_videos.insert("", "end", values=
+            (video[0], video[1], video[2], "*" * video[3]))
+
+    def add_video(self):
+        try:
+            # Get the selected item ID from the source treeview
+            selected_item = self.all_videos.selection()[0]
+        except IndexError:
+            return None
+        # Get the values of the selected item
+        values = self.all_videos.item(selected_item)["values"]
+        # Get the video ID from the first value
+        video_id = int(values[0])
+        video_title, video_director, video_rate, rate, path = video_controller.check_video(video_id)
+        # Insert the values into the destination treeview
+        self.video_added.insert("", "end", values=(video_id, video_title, video_director, "*" * video_rate))
+        # Delete the selected item from the source treeview
+        self.all_videos.delete(selected_item)
+
+    def remove_video(self):
+        try:
+            # Get the selected item ID from the source treeview
+            selected_item = self.video_added.selection()[0]
+        except IndexError:
+            return None
+        # Get the values of the selected item
+        values = self.video_added.item(selected_item)["values"]
+        # Get the video ID from the first value
+        video_id = int(values[0])
+        video_title, video_director, video_rate, rate, path = video_controller.check_video(video_id)
+        # Insert the values into the destination treeview
+        self.all_videos.insert("", "end", values=(video_id, video_title, video_director, "*" * video_rate))
+        # Delete the selected item from the source treeview
+        self.video_added.delete(selected_item)
 if __name__ == "__main__":
     # Create a themed window with the desired theme name
     window = ThemedTk(theme="arc")

@@ -11,7 +11,7 @@ class PlaylistController:
         for playlist in self.data:
             id = playlist.id
             title = playlist.title
-            length = playlist.length
+            length = playlist.get_length()
             playlist_list.append([id, title, length])
         return playlist_list
 
@@ -49,3 +49,6 @@ class PlaylistController:
                             video_list.append([video.id, video.title, video.director, video.rate])
 
         return video_list
+
+
+playList_controller = PlaylistController()

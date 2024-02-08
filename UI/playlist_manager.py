@@ -4,7 +4,7 @@ import tkinter.font as tkfont
 from ttkthemes import ThemedTk
 
 from models.Playlist_model import Playlist
-from controller.playlist_controller import PlaylistController
+from controller.playlist_controller import playList_controller
 
 
 from UI.create_playlist import CreatePlaylist
@@ -72,7 +72,7 @@ class PlaylistManager(tk.Frame):
         self.add_btn.grid(row=0, column=0, ipady=20, ipadx=20)
         # update button
         self.update_btn = ttk.Button(self.function_btn_frame, text="Update Playlist", compound="left",
-                                  command=None)
+                                  command=  self.info_for_chosen_list)
         self.update_btn.grid(row=1, column=0, ipady=5, ipadx=5, padx=10, pady=10)
         # delete button
         self.delete_btn = ttk.Button(self.function_btn_frame, text="Delete Playlist", compound="left",
@@ -100,8 +100,8 @@ class PlaylistManager(tk.Frame):
         self.play_btn = ttk.Button(self.listbox_frame, text="PLay", width=70)
         self.play_btn.grid(row=3, column=0, padx=10, pady=10)
 
+        self.list_all()
     def create_window(self):
-        print(self.top_open)
         if not self.top_open:
             self.top_open = True
             new_window = tk.Toplevel(self)
@@ -118,6 +118,58 @@ class PlaylistManager(tk.Frame):
 
     def set_top_open_false(self):
         self.top_open = False
+
+
+    def info_for_chosen_list(self):
+        try:
+            item_id = self.main_display.focus()
+
+            # get id and title of list
+            item = self.main_display.item(item_id, "values")
+            try:
+                list_id = int(item[0])
+                list_title = item[1]
+            except ValueError:
+                list_id = -1
+                list_title = "None"
+            print(list_id)
+            return list_id, list_title
+        except IndexError:
+            warning_label = tk.Label(self.search_frame, text="PLease choose a list to optimize", fg="red")
+            warning_label.grid(row=1, column=1)
+            warning_label.after(1000, warning_label.destroy)
+
+    # allow using 2 function in the same button
+    def combine(self):
+        self.update_window()
+        self.info_for_chosen_list()
+
+    # def video_in_list_display(self, event):
+    #     self.main_display.delete(*self.main_display.get_children())
+    #     # get the selected item from the event widget
+    #     item_id = event.widget.focus()
+    #     item = event.widget.item(item_id, "values")
+    #     try:
+    #         list_id = item[0]
+    #     except ValueError:
+    #         list_id = -1
+    #
+    #     try:
+    #         for video in controller.display_videos_in_list(list_id):
+    #             self.video_display.insert("", "end", values=(video[0], video[1], video[2], "*" * int(video[3])))
+    #     except TypeError:
+    #         item_id = self.video_display.insert("", "end", values=("", "", "", ""))
+    #         self.video_display.set(item_id, column="Title", value="None")
+    #     for video in controller.display_videos_in_list(list_id):
+    #         self.video_display.insert("", "end", values=(video[0], video[1], video[2], "*" * int(video[3])))
+
+    def list_all(self):
+        # Remove every children from the display
+        for i in self.main_display.get_children(): # return a list of child of objects on main_display
+            self.main_display.delete(i) # remove that list from the display
+            # For each data, add a new row to the display
+        for item in playList_controller.list_playlist(): # For each data
+            self.main_display.insert("", "end", values=(item[0], item[1], item[2])) # add a new row to the display
 
 
 if __name__ == "__main__":
