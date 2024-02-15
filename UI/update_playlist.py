@@ -45,11 +45,12 @@ class UpdatePlaylist(tk.Frame):
         self.search_combobox.config(width=10)
         self.search_combobox.grid(row=0, column=2, padx=5, pady=5)
 
-        # Create a button to check a video
-        btn_check_video = ttk.Button(self.search_frame, text="Search", compound="left",
-                                     command=None)
+        # Create a button to check a video-->change into refresh button
+        btn_check_video = ttk.Button(self.search_frame, text="REFRESH", compound="left",
+                                     command= self.display_video)
         btn_check_video.config(width=15)
         btn_check_video.grid(row=0, column=3, padx=5, pady=5)
+        self.search_entry.bind('<Return>', self.search_video)
 
 
         # Create get name frame
@@ -181,6 +182,25 @@ class UpdatePlaylist(tk.Frame):
         # Delete the selected item from the source treeview
         self.video_added.delete(selected_item)
 
+    def refresh(self):
+        # Remove every children from the display
+        for i in self.all_videos.get_children():  # return a list of child of objects on main_display
+            self.all_videos.delete(i)  # remove that list from the display
+
+        list_id, list_title = self.playlist_manager.info_for_chosen_list()
+
+        list_video_ids = set()
+        try:
+            # For each data, add a new row to the display
+            for video in video_controller.list_video():  # For each video
+                video_id = video[0]
+                if video_id not in list_video_ids:
+                    self.all_videos.insert("", "end", values=(video[0], video[1], video[2], "*" * video[3]))
+        # video lsit have None video, display all videos
+        except TypeError:
+            print("not work")
+
+
     def display_video(self):
         # Remove every children from the display
         for i in self.all_videos.get_children():  # return a list of child of objects on main_display
@@ -205,15 +225,35 @@ class UpdatePlaylist(tk.Frame):
 
     def video_in_list_display(self):
         list_id, list_title = self.playlist_manager.info_for_chosen_list()
+        print(list_title)
         try:
             for video in playList_controller.display_video_in_list(list_id):
                 self.video_added.insert("", "end", values=(video[0], video[1], video[2], "*" * video[3]))
-            # self.get_current_name.insert(0, list_title)
+            self.get_name.insert(0, list_title)
         except TypeError:
             self.video_added.insert("", "end", values=("", "", "", ""))
             # self.get_current_name.insert(0, list_title)
 
 
+    def search_video(self, event):
+        search_value = self.search_entry.get()
+        selected_mode = self.search_combobox.get()
+        # clear treeview
+        self.all_videos.delete(*self.all_videos.get_children())
+        if not search_value:
+            """ return warning later"""
+            return False
+
+        try:
+            for video in video_controller.find_video(search_value, selected_mode):
+                self.all_videos.insert("", "end", values=(video[0], video[1], video[2], "*" * int(video[3])))
+        except TypeError:
+            """ return warning later"""
+            return "False"
+        except ValueError:
+            return "False"
+        except IndexError:
+            return "False"
 
 # if __name__ == "__main__":
 #     # Create a themed window with the desired theme name

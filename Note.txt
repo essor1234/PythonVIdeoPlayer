@@ -65,6 +65,7 @@
 - need make search function work
 
 ---Update Playlist----
-- Need to get the current playlist name
-- search function need to implement
+- Need to get the current playlist name(Done)
+- search function need to implement(done)
+-- Still need to make it when refresh only display video haven't add into the list
 - save func need to implement
