@@ -136,7 +136,7 @@ class UpdatePlaylist(tk.Frame):
 
 
         # Create create button
-        self.create_btn = ttk.Button(self.root, text="Save", compound="left", command=None)
+        self.create_btn = ttk.Button(self.root, text="Save", compound="left", command= self.save_function)
         self.create_btn.pack(side="right", padx=10, pady=10)
 
         self.display_video()
@@ -225,7 +225,6 @@ class UpdatePlaylist(tk.Frame):
 
     def video_in_list_display(self):
         list_id, list_title = self.playlist_manager.info_for_chosen_list()
-        print(list_title)
         try:
             for video in playList_controller.display_video_in_list(list_id):
                 self.video_added.insert("", "end", values=(video[0], video[1], video[2], "*" * video[3]))
@@ -254,6 +253,44 @@ class UpdatePlaylist(tk.Frame):
             return "False"
         except IndexError:
             return "False"
+
+    def save_function(self):
+        # get id and title of list
+        list_id, list_title = self.playlist_manager.info_for_chosen_list()
+        # call out the model
+        playlist_model = Playlist(list_id, list_title)
+        # List to store all videos
+        video_list = []
+        # Get the name of the list
+        list_name = self.get_name.get()
+
+        # Join all videos need to get into the video_list[]
+        for line in self.video_added.get_children():
+            video = self.video_added.item(line)["values"]
+            video_list.append(str(video[0]))
+        while "" in video_list:
+            video_list.remove("")
+
+        video_list = ", ".join(video_list)
+
+        '''
+        This Line is for checking if the list name is blank or not
+        '''
+        if not list_name:
+            # self.get_current_name.config(highlightbackground="red", highlightcolor="red")
+            # if not self.warning_shown:
+            #     warning_label = tk.Label(self.name_frame, text="Name is required!", fg="red")
+            #     warning_label.pack()
+            #     warning_label.after(500, warning_label.destroy)
+            #     self.warning_shown = True
+            print("Missed List Name")
+        else:
+            # do something with list_name and video_list
+            playlist_model.update_list(list_id, list_name, video_list)
+            # destroy the window
+            self.root.destroy()
+            self.playlist_manager.set_top_open_false()
+
 
 # if __name__ == "__main__":
 #     # Create a themed window with the desired theme name

@@ -40,27 +40,22 @@ class Playlist:
         except:
             return False
 
-
-
     def update_list(self, list_id, list_title, video_ids):
-        for new_id in video_ids:
-            for old_id in self.video_ids:
-                if new_id != old_id:
-                    self.video_ids.append(video_ids)
+        # Ensure video_ids are valid
+        video_ids = [vid.strip() for vid in video_ids.split(",") if vid.strip().isdigit()]
 
         df = pd.read_csv(self.playlist_file, header=0)
         # get index
         index = df.index[df.id == list_id][0]
         # update
         df.loc[index, "title"] = list_title
-        df.loc[index, "video_ids"] = video_ids
-        df.loc[index, "length"] = len(video_ids.split(", "))
+        df.loc[index, "video_id"] = ', '.join(map(str, video_ids))
+        df.loc[index, "length"] = len(video_ids)
         try:
             df.to_csv(self.playlist_file, index=False)
             return True
         except:
             return False
-
 
     def delete_list(self, list_id):
         df = pd.read_csv(self.playlist_file, header=0)

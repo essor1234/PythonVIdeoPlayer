@@ -110,6 +110,7 @@ class PlaylistManager(tk.Frame):
             new_window.protocol("WM_DELETE_WINDOW", lambda: self.close_top(new_window))
 
     def update_window(self):
+        print(self.top_open)
         if not self.top_open:
             self.top_open = True
             new_window = tk.Toplevel(self)
