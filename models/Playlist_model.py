@@ -56,7 +56,7 @@ class Playlist:
             return True
         except:
             return False
-
+    @classmethod
     def delete_list(self, list_id):
         df = pd.read_csv(self.playlist_file, header=0)
         # keep row have different id

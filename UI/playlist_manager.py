@@ -76,7 +76,7 @@ class PlaylistManager(tk.Frame):
         self.update_btn.grid(row=1, column=0, ipady=5, ipadx=5, padx=10, pady=10)
         # delete button
         self.delete_btn = ttk.Button(self.function_btn_frame, text="Delete Playlist", compound="left",
-                                     command=None)
+                                     command= self.delete_func)
         self.delete_btn.grid(row=2, column=0, ipady=5, ipadx=5, padx=10, pady=10)
 
         """Display"""
@@ -175,6 +175,28 @@ class PlaylistManager(tk.Frame):
             # For each data, add a new row to the display
         for item in playList_controller.list_playlist(): # For each data
             self.main_display.insert("", "end", values=(item[0], item[1], item[2])) # add a new row to the display
+
+    def delete_func(self):
+        seleted_item = self.main_display.focus()
+        if not seleted_item:
+            """TODO: create warning later"""
+            return False
+        # get video id
+        try:
+            list_id = int(self.main_display.item(seleted_item, "values")[0])
+        except ValueError:
+            list_id = -1
+        # call delete method
+        is_deleted = Playlist.delete_list(list_id)
+        # check if video is deleted in data or not
+        if is_deleted:
+            self.main_display.delete(seleted_item)
+
+    '''
+    Need search function
+    play function 
+    display all video names in the list into a sub display(maybe add a thumbnail into it too)
+    '''
 
 
 if __name__ == "__main__":

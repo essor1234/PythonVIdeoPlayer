@@ -59,7 +59,7 @@
 -----Playlist Manager------
 - search func need to implement
 - double click into the list to dshow all videos(with thumbnail)
-- implement delete function
+- implement delete function(done)
 
 ---Create Playlist----
 - need make search function work
@@ -67,5 +67,5 @@
 ---Update Playlist----
 - Need to get the current playlist name(Done)
 - search function need to implement(done)
--- Still need to make it when refresh only display video haven't add into the list
+-- Still need to make it when refresh only display video haven't add into the list(done)
 - save func need to implement(still get error that display more data than neccesary[video_ids])(done)
