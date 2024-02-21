@@ -47,7 +47,7 @@ class UpdatePlaylist(tk.Frame):
 
         # Create a button to check a video-->change into refresh button
         btn_check_video = ttk.Button(self.search_frame, text="REFRESH", compound="left",
-                                     command= self.display_video)
+                                     command= self.refresh)
         btn_check_video.config(width=15)
         btn_check_video.grid(row=0, column=3, padx=5, pady=5)
         self.search_entry.bind('<Return>', self.search_video)
@@ -184,22 +184,23 @@ class UpdatePlaylist(tk.Frame):
 
     def refresh(self):
         # Remove every children from the display
-        for i in self.all_videos.get_children():  # return a list of child of objects on main_display
-            self.all_videos.delete(i)  # remove that list from the display
+        for i in self.all_videos.get_children():
+            self.all_videos.delete(i)
 
-        list_id, list_title = self.playlist_manager.info_for_chosen_list()
+        list_video_ids = []
+        # Populate list_video_ids with the ids of the videos that are already added
+        for video in self.video_added.get_children():
+            video_data = self.video_added.item(video, 'values')
+            list_video_ids.append(video_data[0])  # Assuming the first element is the video ID
 
-        list_video_ids = set()
         try:
             # For each data, add a new row to the display
-            for video in video_controller.list_video():  # For each video
+            for video in video_controller.list_video():
                 video_id = video[0]
-                if video_id not in list_video_ids:
-                    self.all_videos.insert("", "end", values=(video[0], video[1], video[2], "*" * video[3]))
-        # video lsit have None video, display all videos
+                if str(video_id) not in list_video_ids:
+                    self.all_videos.insert("", "end", values=(video[0], video[1], video[2], "*" * int(video[3])))
         except TypeError:
             print("not work")
-
 
     def display_video(self):
         # Remove every children from the display

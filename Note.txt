@@ -68,4 +68,4 @@
 - Need to get the current playlist name(Done)
 - search function need to implement(done)
 -- Still need to make it when refresh only display video haven't add into the list
-- save func need to implement(still get error that display more data than neccesary[video_ids])
+- save func need to implement(still get error that display more data than neccesary[video_ids])(done)
