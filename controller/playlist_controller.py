@@ -5,6 +5,8 @@ class PlaylistController:
     data = Playlist.get_playlist_data()
     video_data = Video.get_video_data()
 
+    def refresh_data(self):
+        self.data = Playlist.get_playlist_data()
 
     def list_playlist(self):
         playlist_list = []
@@ -38,6 +40,26 @@ class PlaylistController:
             return False
 
         return playlist_list
+
+    def find_list(self, list_search, mode):
+        mode = mode.lower()
+        lists = []
+        if mode == "id":
+            for playlist in self.data:
+                print(list_search)
+                print(playlist.id)
+                if list_search == playlist.id:
+                    lists.append([playlist.id, playlist.title, playlist.length])
+        elif mode == "title":
+            for playlist in self.data:
+                if list_search.lower().replace(" ", "") in playlist.title.lower().replace(" ", ""):
+                    lists.append([playlist.id, playlist.title, playlist.length])
+
+        if lists is None:
+            return False
+        print(lists)
+        return lists
+
 
     def display_video_in_list(self, list_id):
         video_list = []

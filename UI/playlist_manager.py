@@ -48,7 +48,7 @@ class PlaylistManager(tk.Frame):
 
         # Create a button to check a video
         btn_check_video = ttk.Button(self.search_frame, text="Search", compound="left",
-                                     command=None)
+                                     command= self.refresh)
         btn_check_video.config(width=15)
         btn_check_video.grid(row=0, column=3)
         # Create a frame for the buttons
@@ -101,6 +101,7 @@ class PlaylistManager(tk.Frame):
         self.play_btn.grid(row=3, column=0, padx=10, pady=10)
 
         self.list_all()
+        self.search_entry.bind('<Return>', self.search_video)
     def create_window(self):
         if not self.top_open:
             self.top_open = True
@@ -192,12 +193,36 @@ class PlaylistManager(tk.Frame):
         if is_deleted:
             self.main_display.delete(seleted_item)
 
+    def search_video(self, event):
+        search_value = self.search_entry.get()
+        selected_mode = self.search_combobox.get()
+        # clear treview
+        self.main_display.delete(*self.main_display.get_children())
+        if not search_value:
+            """ return warning later"""
+            return False
+
+        try:
+            for video in playList_controller.find_list(search_value, selected_mode):
+                self.main_display.insert("", "end", values=(video[0], video[1], video[2]))
+        except TypeError:
+            """ return warning later"""
+            return "False"
+        except ValueError:
+            return "False"
+        except IndexError:
+            return "False"
+
     '''
     Need search function
     play function 
     display all video names in the list into a sub display(maybe add a thumbnail into it too)
     '''
-
+    def refresh(self):
+        self.main_display.delete(*self.main_display.get_children())
+        self.list_all()
+        self.listbox.delete(0, tk.END)
+        playList_controller.refresh_data()
 
 if __name__ == "__main__":
     # Create a themed window with the desired theme name

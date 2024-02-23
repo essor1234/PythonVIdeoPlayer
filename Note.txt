@@ -57,7 +57,7 @@
 - when dowload or choose a video, need to move the video into a stored-> fixed
 
 -----Playlist Manager------
-- search func need to implement
+- search func need to implement(done)
 - double click into the list to dshow all videos(with thumbnail)
 - implement delete function(done)
 
