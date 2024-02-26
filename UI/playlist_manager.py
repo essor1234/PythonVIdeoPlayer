@@ -5,6 +5,8 @@ from ttkthemes import ThemedTk
 
 from models.Playlist_model import Playlist
 from controller.playlist_controller import playList_controller
+from models.player_model import Player
+from models.VIdeo_model import Video
 
 
 from UI.create_playlist import CreatePlaylist
@@ -47,7 +49,7 @@ class PlaylistManager(tk.Frame):
         self.search_combobox.grid(row=0, column=2)
 
         # Create a button to check a video
-        btn_check_video = ttk.Button(self.search_frame, text="Search", compound="left",
+        btn_check_video = ttk.Button(self.search_frame, text="REFRESH", compound="left",
                                      command= self.refresh)
         btn_check_video.config(width=15)
         btn_check_video.grid(row=0, column=3)
@@ -97,11 +99,13 @@ class PlaylistManager(tk.Frame):
         self.listbox.grid(row=1, column=0, rowspan=2, padx=10, pady=10)
 
         """Play button"""
-        self.play_btn = ttk.Button(self.listbox_frame, text="PLay", width=70)
+        self.play_btn = ttk.Button(self.listbox_frame, text="PLay", width=70, command= self.play_video)
         self.play_btn.grid(row=3, column=0, padx=10, pady=10)
 
         self.list_all()
         self.search_entry.bind('<Return>', self.search_video)
+        self.main_display.bind('<Double-Button-1>', self.check_list)
+
     def create_window(self):
         if not self.top_open:
             self.top_open = True
@@ -223,6 +227,70 @@ class PlaylistManager(tk.Frame):
         self.list_all()
         self.listbox.delete(0, tk.END)
         playList_controller.refresh_data()
+
+    def check_list(self, event):
+        # videos = []
+        # # get video_id from treeview (in a tuple)
+        # list_id = self.main_display.selection()
+        # # clear list box
+        # self.listbox.delete(0, tk.END)
+        #
+        # for video_id in list_id:
+        #     values = self.main_display.item(video_id, "values")
+        #     try:
+        #         video_key = int(values[0])
+        #     except IndexError:
+        #         return False
+        #
+        #     # if playList_controller.display_video_in_list(video_key) == False:
+        #     #     break
+        #     # run method
+        #     videos = playList_controller.display_video_in_list(video_key)
+            # insert video into list box
+        list_id, list_title = self.info_for_chosen_list()
+        self.listbox.delete(0, tk.END)
+
+        try:
+            order = 0
+            for video in playList_controller.display_video_in_list(list_id):
+                order += 1
+                self.listbox.insert(tk.END, order)
+                self.listbox.insert(tk.END, "Title: " + video[1])
+                self.listbox.insert(tk.END, "Director: " + video[2])
+                self.listbox.insert(tk.END, "Rate: " + str(video[3]))
+                self.listbox.insert(tk.END, "=" * 100, " ")
+        except TypeError:
+            self.listbox.insert(tk.END, "")
+            # self.get_current_name.insert(0, list_title)
+
+    def play_video(self):
+        video_list = []
+        video_list = Video.get_video_data()
+        for videos in playList_controller.display_video_in_list(list_id):
+            video_list.append(videos[0])
+
+        for video in video_list:
+            video_path, video_id = self.return_video_path(video)
+            print(f"Video path: {video_path} \nVideo id: {video_id}")
+
+            new_window = tk.Toplevel(self)
+            frame = Player(new_window, video_path, title="tkinter vlc")
+
+            def close_window_and_stop_player():
+                frame.stop()
+                new_window.destroy()
+
+            new_window.protocol("WM_DELETE_WINDOW", close_window_and_stop_player)
+            new_window.mainloop()
+
+    def return_video_path(self, video):
+        video_id = video.id
+        video_path = video.path
+
+        if video_path is None:
+            return False
+
+        return video_path, video_id
 
 if __name__ == "__main__":
     # Create a themed window with the desired theme name

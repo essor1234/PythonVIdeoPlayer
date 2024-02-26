@@ -75,6 +75,9 @@ class Playlist:
 
     def get_length(self):
         df = pd.read_csv(self.playlist_relative_path)
+        if df.empty or not any(df.id == self.id):
+            print("No matching id found in the playlist")
+            return None
         length = df.loc[df.id == self.id, "length"].values[0]
         self.length = length
         return self.length
