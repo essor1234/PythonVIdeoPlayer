@@ -19,6 +19,7 @@ class PlaylistManager(tk.Frame):
         self.controller = controller
 
         self.parent= parent
+        self.video_queue = []
         # window display
         self.root = self.parent
         self.root.title("Playlist Manager")
@@ -263,34 +264,79 @@ class PlaylistManager(tk.Frame):
             self.listbox.insert(tk.END, "")
             # self.get_current_name.insert(0, list_title)
 
-    def play_video(self):
-        video_list = []
-        video_list = Video.get_video_data()
-        for videos in playList_controller.display_video_in_list(list_id):
-            video_list.append(videos[0])
+    # def play_video(self):
+    #     # store full info of video in list
+    #     video_in_list = []
+    #     # All videos in database
+    #     all_video = Video.get_video_data()
+    #     # Videos in a list
+    #     list_id, list_title = self.info_for_chosen_list()
+    #     for video_inside_list in playList_controller.display_video_in_list(list_id):
+    #         for videos in all_video:
+    #             if videos.id == video_inside_list[0]:
+    #                 video_in_list.append((videos.id, videos.path))
+    #
+    #
+    #
+    #
+    #     for video_id, video_path in video_in_list:
+    #         print(f"Video path: {video_path} \nVideo id: {video_id}")
+    #
+    #         new_window = tk.Toplevel(self)
+    #         frame = Player(new_window, video_path, title="tkinter vlc")
+    #
+    #         def close_window_and_stop_player():
+    #             frame.stop()
+    #             new_window.destroy()
+    #
+    #         new_window.protocol("WM_DELETE_WINDOW", close_window_and_stop_player)
+    #         new_window.mainloop()
 
+
+
+    # def return_video_path(self, video):
+    #     video_id = video.id
+    #     video_path = video.path
+    #
+    #     if video_path is None:
+    #         return False
+    #
+    #     return video_path, video_id
+
+    def add_to_queue(self, video_list):
         for video in video_list:
-            video_path, video_id = self.return_video_path(video)
+            self.video_queue.append(video)
+
+    def play_next_video(self):
+        if self.video_queue:  # if there are videos left in the queue
+            video_id, video_path = self.video_queue.pop(0)  # get the next video
             print(f"Video path: {video_path} \nVideo id: {video_id}")
 
-            new_window = tk.Toplevel(self)
+            new_window = tk.Toplevel(self.main_display)
             frame = Player(new_window, video_path, title="tkinter vlc")
 
             def close_window_and_stop_player():
                 frame.stop()
                 new_window.destroy()
+                self.play_next_video()  # play the next video
 
             new_window.protocol("WM_DELETE_WINDOW", close_window_and_stop_player)
             new_window.mainloop()
+        else:
+            print("No more videos in the queue.")
 
-    def return_video_path(self, video):
-        video_id = video.id
-        video_path = video.path
-
-        if video_path is None:
-            return False
-
-        return video_path, video_id
+    def play_video(self):
+        video_in_list = []
+        # All videos in database
+        all_video = Video.get_video_data()
+        # Videos in a list
+        list_id, list_title = self.info_for_chosen_list()
+        for video_inside_list in playList_controller.display_video_in_list(list_id):
+            for videos in all_video:
+                if videos.id == video_inside_list[0]:
+                    video_in_list.append((videos.id, videos.path))
+        self.add_to_queue(video_in_list)
+        self.play_next_video()
 
 if __name__ == "__main__":
     # Create a themed window with the desired theme name
