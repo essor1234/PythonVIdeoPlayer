@@ -14,9 +14,8 @@ from UI.update_playlist import UpdatePlaylist
 
 class PlaylistManager(tk.Frame):
     columns = ["Id", "Title", "Length"]
-    def __init__(self, parent, controller):
+    def __init__(self, parent):
         tk.Frame.__init__(self, parent)
-        self.controller = controller
 
         self.parent= parent
         self.video_queue = []
@@ -314,6 +313,7 @@ class PlaylistManager(tk.Frame):
 
             new_window = tk.Toplevel(self.main_display)
             frame = Player(new_window, video_path, title="tkinter vlc")
+            Video.increase_play(video_id)
 
             def close_window_and_stop_player():
                 frame.stop()
@@ -338,13 +338,13 @@ class PlaylistManager(tk.Frame):
         self.add_to_queue(video_in_list)
         self.play_next_video()
 
-if __name__ == "__main__":
-    # Create a themed window with the desired theme name
-    window = ThemedTk(theme="arc")
-    # Create a style object
-    style = ttk.Style(window)
-
-
-    app = PlaylistManager(window, None)
-    app.grid()
-    window.mainloop()
+# if __name__ == "__main__":
+#     # Create a themed window with the desired theme name
+#     window = ThemedTk(theme="arc")
+#     # Create a style object
+#     style = ttk.Style(window)
+#
+#
+#     app = PlaylistManager(window, None)
+#     app.grid()
+#     window.mainloop()

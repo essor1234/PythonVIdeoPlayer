@@ -6,10 +6,10 @@ import vlc
 from pynput import keyboard, mouse
 
 class Video:
-    video_file = os.path.join("..", "data", "video_data.csv")
+    video_file = os.path.join( "data", "video_data.csv")
     video_relative_path = os.path.relpath(video_file)
 
-    video_stored_file = os.path.join("..", "data", "videos_stored")
+    video_stored_file = os.path.join( "data", "videos_stored")
     video_stored_relative_path = os.path.relpath(video_stored_file)
 
     def __init__(self, id, title, director, path):

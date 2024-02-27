@@ -239,6 +239,7 @@ class VideoManager(tk.Frame):
 
         new_window = tk.Toplevel(self)
         frame = Player(new_window, video_path, title="tkinter vlc")
+        Video.increase_play(video_id)
 
         def close_window_and_stop_player():
             frame.stop()
@@ -281,7 +282,5 @@ if __name__ == "__main__":
     # Create a themed window with the desired theme name
     window = tk.Tk()
     # Create a style object
-
-
     app = VideoManager(window)
     window.mainloop()

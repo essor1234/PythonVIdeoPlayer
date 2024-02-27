@@ -2,7 +2,7 @@ import pandas as pd
 import os
 
 class Playlist:
-    playlist_file = "../data/playlist_data.csv"
+    playlist_file = "data/playlist_data.csv"
     playlist_relative_path = os.path.relpath(playlist_file)
 
     def __init__(self, id, title):

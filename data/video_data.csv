@@ -1,7 +1,7 @@
 id,title,director,rate,plays,path
-1,glimpse of us,joji,4,0,..\data\videos_stored\glimpse of us.mp4
-2,Until I found u,Stephen sanchez,5,0,..\data\videos_stored\Until I found u.mp4
-3,青い栞,the first take,0,0,..\data\videos_stored\青い栞.mp4
-4,tttt,ttttt,0,0,..\data\videos_stored\tttt.mp4
-5,Uptown,Westlife,0,0,https://youtu.be/yvvgHACybW4?feature=shared
-6,Uptown gisr,westlife,0,0,..\data\videos_stored\Uptown gisr.mp4
+1,glimpse of us,joji,4,4,data\videos_stored\glimpse of us.mp4
+2,Until I found u,Stephen sanchez,5,3,data\videos_stored\Until I found u.mp4
+3,青い栞,the first take,0,4,data\videos_stored\青い栞.mp4
+4,tttt,ttttt,0,3,data\videos_stored\tttt.mp4
+6,Uptown gisr,westlife,0,1,data\videos_stored\Uptown gisr.mp4
+7,シルシ,LiSA,4,0,data\videos_stored\シルシ.mp4
